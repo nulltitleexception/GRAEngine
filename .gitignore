@@ -1,3 +1,9 @@
 #CLion
 .idea
 cmake-build-debug
+
+#libs for distribution
+lib
+
+#headers for distribution
+include
