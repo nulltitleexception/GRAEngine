@@ -49,12 +49,12 @@ INSTALL (
 INSTALL (
         DIRECTORY ${GLFW_DIR}/lib/
         DESTINATION ${CMAKE_SOURCE_DIR}/lib
-        FILES_MATCHING PATTERN "*.dll*"
+        FILES_MATCHING PATTERN "*.dll"
 )
 INSTALL (
         DIRECTORY ${DEVIL_DIR}/lib/x64/Release/
         DESTINATION ${CMAKE_SOURCE_DIR}/lib
-        FILES_MATCHING PATTERN "*.dll*"
+        FILES_MATCHING PATTERN "DevIL.dll"
 )
 
 INSTALL (
