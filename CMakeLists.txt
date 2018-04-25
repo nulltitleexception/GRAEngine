@@ -3,7 +3,9 @@ project(grae-engine)
 
 if (WIN32)
     add_definitions(-D_WIN32)
+    remove_definitions(-D_UNIX)
 else()
+    add_definitions(-D_UNIX)
     remove_definitions(-D_WIN32)
 endif()
 
@@ -33,24 +35,43 @@ find_library(WS2_32_LIBRARY ws2_32)
 target_link_libraries(grae-engine glfw3dll DevIL ws2_32)
 target_compile_definitions(grae-engine PRIVATE)
 
-INSTALL(TARGETS grae-engine
+INSTALL(
+        TARGETS grae-engine
         DESTINATION ${CMAKE_SOURCE_DIR}/lib
-        )
+)
+
 INSTALL (
         DIRECTORY ${CMAKE_SOURCE_DIR}/src/
         DESTINATION ${CMAKE_SOURCE_DIR}/include
-        FILES_MATCHING PATTERN "*.h*")
+        FILES_MATCHING PATTERN "*.h*"
+)
 
 INSTALL (
         DIRECTORY ${GLFW_DIR}/lib/
         DESTINATION ${CMAKE_SOURCE_DIR}/lib
-        FILES_MATCHING PATTERN "*.dll*")
+        FILES_MATCHING PATTERN "*.dll*"
+)
 INSTALL (
         DIRECTORY ${DEVIL_DIR}/lib/x64/Release/
         DESTINATION ${CMAKE_SOURCE_DIR}/lib
-        FILES_MATCHING PATTERN "*.dll*")
+        FILES_MATCHING PATTERN "*.dll*"
+)
 
-add_custom_target(install_${PROJECT_NAME}
+INSTALL (
+        DIRECTORY ${GLFW_DIR}/include/
+        DESTINATION ${CMAKE_SOURCE_DIR}/include
+        FILES_MATCHING PATTERN "*.h*"
+)
+
+INSTALL (
+        DIRECTORY ${GLAD_DIR}/include/
+        DESTINATION ${CMAKE_SOURCE_DIR}/include
+        FILES_MATCHING PATTERN "*.h"
+)
+
+add_custom_target(
+        install_${PROJECT_NAME}
         "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target install
         DEPENDS ${PROJECT_NAME}
-        COMMENT "Installing ${PROJECT_NAME}")
+        COMMENT "Installing ${PROJECT_NAME}"
+)

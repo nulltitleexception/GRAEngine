@@ -84,7 +84,7 @@ public:
     }
 
     template<typename T>
-    T *&get(std::string id) {
+    T * const &get(std::string id) {
         if (!((PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))]))->resourceExists(id)) {
             ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))])))[id] = new T(
                     (rootDir.length() > 0 ? rootDir + "/" : "") +
@@ -96,7 +96,7 @@ public:
     }
 
     template<typename T>
-    T *&operator[](std::string id) { return get<T>(id); }
+    T * const &operator[](std::string id) { return get<T>(id); }
 
 };
 }
