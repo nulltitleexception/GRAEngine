@@ -94,10 +94,6 @@ public:
         }
         return ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))])))[id];
     }
-
-    template<typename T>
-    T * const &operator[](std::string id) { return get<T>(id); }
-
 };
 }
 
