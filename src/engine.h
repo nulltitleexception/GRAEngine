@@ -5,5 +5,6 @@
 #include "graphics/graphics.h"
 #include "math/math.h"
 #include "resource/resource.h"
+#include "version/version.h"
 
 #endif //GRAE_ENGINE_ENGINE_H

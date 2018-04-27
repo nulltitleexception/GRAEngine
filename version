@@ -1,0 +1,4 @@
+0;//BUILD NUMBER
+std::string BUILD = "Alpha";//RELEASE TYPE
+int MAJ = 0;//MAJOR VERSION
+int MIN = 0;//MINOR VERSION

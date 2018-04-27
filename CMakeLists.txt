@@ -35,6 +35,19 @@ find_library(WS2_32_LIBRARY ws2_32)
 target_link_libraries(grae-engine glfw3dll DevIL ws2_32)
 target_compile_definitions(grae-engine PRIVATE)
 
+add_custom_target(
+        version
+        COMMENT "Incrementing build number"
+)
+
+add_custom_command(
+        TARGET version
+        PRE_BUILD
+        COMMAND ${CMAKE_COMMAND}
+        -P "${CMAKE_SOURCE_DIR}/version.cmake"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
 INSTALL(
         TARGETS grae-engine
         DESTINATION ${CMAKE_SOURCE_DIR}/lib
@@ -72,6 +85,6 @@ INSTALL (
 add_custom_target(
         install_${PROJECT_NAME}
         "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target install
-        DEPENDS ${PROJECT_NAME}
+        DEPENDS ${PROJECT_NAME} version
         COMMENT "Installing ${PROJECT_NAME}"
 )
