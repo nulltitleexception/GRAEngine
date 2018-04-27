@@ -2,14 +2,17 @@
 #define GRAE_ENGINE_VERSION_H
 
 #include <string>
-#include <sstream>
 
-std::string getVersionString(){
-    int BUILD_NUMBER =
-#include "../version"
-    std::ostringstream ret;
-    ret << BUILD << " " << MAJ << "." << MIN << "." << BUILD_NUMBER;
-    return ret.str();
+namespace GRAE {
+std::string getVersionString();
+
+std::string getRelease();
+
+int getMajor();
+
+int getMinor();
+
+int getBuildNumber();
 }
 
 #endif //GRAE_ENGINE_VERSION_H
