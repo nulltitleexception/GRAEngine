@@ -1,6 +1,7 @@
 file(READ "version" VERSION)
 list(GET VERSION 0 BUILD_NUMBER)
 math(EXPR BUILD_NUMBER "${BUILD_NUMBER} + 1")
+message("Build Number: ${BUILD_NUMBER}")
 list(INSERT VERSION 0 ${BUILD_NUMBER})
 list (REMOVE_AT VERSION 1)
 file(WRITE "version" "${VERSION}")
