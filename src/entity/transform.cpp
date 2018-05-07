@@ -16,7 +16,7 @@ vec4 &Transform::getscale() {
 }
 
 mat4 Transform::asMatrix() {
-    return MatUtil::scale(scale.x, scale.y, scale.z) * MatUtil::rotationX(rot.x) * MatUtil::rotationZ(rot.z) *
-           MatUtil::rotationY(rot.y) * MatUtil::translation(pos.x, pos.y, pos.z);
+    return MatUtil::translation(pos.x, pos.y, pos.z) * MatUtil::rotationX(rot.x) * MatUtil::rotationZ(rot.z) *
+           MatUtil::rotationY(rot.y) * MatUtil::scale(scale.x, scale.y, scale.z);
 }
 }

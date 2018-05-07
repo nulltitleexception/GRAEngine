@@ -2,6 +2,8 @@
 #define GRAE_ENGINE_ENTITY_H
 
 #include "transform.h"
+#include "model.h"
+
 #include "component.h"
 #include "math/math.h"
 #include <unordered_map>
@@ -16,10 +18,14 @@ public:
     Entity();
 
     template<typename T>
-    T *getComponent();
+    T *getComponent(){
+        return (T *) components[std::type_index(typeid(T))];
+    }
 
     template<typename T>
-    void addComponent(T *c);
+    void addComponent(T *c){
+        components[std::type_index(typeid(T))] = c;
+    }
 
     void update(double dt);
 
