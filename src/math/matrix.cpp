@@ -19,10 +19,16 @@ Matrix4x4D::Matrix4x4D(double diag) {
 }
 
 Matrix4x4D &Matrix4x4D::operator*=(Matrix4x4D rhs) {
+    Matrix4x4D ret;
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            m[i][j] = (m[0][j] * rhs.m[i][0]) + (m[1][j] * rhs.m[i][1]) + (m[2][j] * rhs.m[i][2]) +
-                      (m[3][j] * rhs.m[i][3]);
+            ret.m[i][j] = (m[0][j] * rhs.m[i][0]) + (m[1][j] * rhs.m[i][1]) + (m[2][j] * rhs.m[i][2]) +
+                          (m[3][j] * rhs.m[i][3]);
+        }
+    }
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            m[i][j] = ret.m[i][j];
         }
     }
     return *this;

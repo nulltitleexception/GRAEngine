@@ -1,27 +1,29 @@
 #ifndef GRAE_ENGINE_WINDOW_H
 #define GRAE_ENGINE_WINDOW_H
 
-
 #include "graphicscontext.h"
 
-#define GLFW_DLL
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <string>
 #include <mutex>
 
 namespace GRAE {
+class InputContext;
+
 struct WindowProperties {
     std::string title;
     int width;
     int height;
 };
 
-static void
-keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
-
 class Window {
+public:
+    class Window_Impl;
+
+private:
+    Window_Impl *Impl;
+    InputContext *input;
+    WindowProperties properties;
+    std::mutex lock;
 public:
     Window();
 
@@ -29,7 +31,7 @@ public:
 
     ~Window();
 
-    GLFWwindow *getHandle();
+    Window_Impl *getImpl();
 
     WindowProperties getProperties();
 
@@ -43,10 +45,9 @@ public:
 
     void swap();
 
-private:
-    GLFWwindow *window;
-    WindowProperties properties;
-    std::mutex lock;
+    InputContext *getInput();
+
+    //static Window* getWindow(Window_Impl);
 };
 }
 

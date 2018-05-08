@@ -1,7 +1,6 @@
 #ifndef GRAE_ENGINE_SHADER_H
 #define GRAE_ENGINE_SHADER_H
 
-
 #include "math/math.h"
 #include "resources.h"
 #include <glad/glad.h>

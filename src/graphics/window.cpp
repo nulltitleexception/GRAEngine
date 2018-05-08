@@ -1,47 +1,51 @@
 #include "window.h"
+
+#define GLFW_DLL
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include <iostream>
 #include <stdexcept>
 
+#include "input/input.h"
+
+#include "window_impl.hpp"
+
 namespace GRAE {
+Window::Window_Impl::Window_Impl(GLFWwindow *wind) : window(wind) {
+}
+
 enum WindowEvent {
     CLOSE, DESTROY
 };
-
-static void
-keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    if (action == GLFW_PRESS) {
-        std::cout << key << " pressed" << std::endl;
-    }
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-    }
-}
 
 Window::Window() {}
 
 Window::Window(GraphicsContext *g, WindowProperties &windowData) : properties(windowData) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, g->getProperties().GLMajor);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, g->getProperties().GLMinor);
-    window = glfwCreateWindow(windowData.width, windowData.height,
-                              &windowData.title[0], NULL, NULL);
-    if (!window) {
+    Impl = new Window_Impl(glfwCreateWindow(windowData.width, windowData.height,
+                                            &windowData.title[0], NULL, NULL));
+    if (!Impl->window) {
         throw std::runtime_error("Window creation failed");
     }
-    this->acquire();
+    acquire();
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-    glfwSetKeyCallback(window, keyCallback);
     glfwSwapInterval(
             1);//0=vsync false | 1 = vsync true | 2 = half frame rate (purpose???)
+    input = new InputContext(this);
 }
 
 Window::~Window() {
-    if (window) {
-        glfwDestroyWindow(window);
+    delete input;
+    if (Impl->window) {
+        glfwDestroyWindow(Impl->window);
     }
 }
 
-GLFWwindow *Window::getHandle() {
-    return window;
+Window::Window_Impl *Window::getImpl() {
+    return Impl;
 }
 
 WindowProperties Window::getProperties() {
@@ -49,7 +53,7 @@ WindowProperties Window::getProperties() {
 }
 
 void Window::setTitle(std::string title) {
-    glfwSetWindowTitle(window, title.c_str());
+    glfwSetWindowTitle(Impl->window, title.c_str());
 }
 
 void Window::release() {
@@ -59,15 +63,19 @@ void Window::release() {
 
 void Window::acquire() {
     lock.lock();
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(Impl->window);
 }
 
 bool Window::closeRequested() {
-    return glfwWindowShouldClose(window);
+    return glfwWindowShouldClose(Impl->window);
 }
 
 void Window::swap() {
-    glfwSwapBuffers(window);
+    glfwSwapBuffers(Impl->window);
+}
+
+InputContext *Window::getInput() {
+    return input;
 }
 
 }

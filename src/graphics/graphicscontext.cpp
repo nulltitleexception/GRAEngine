@@ -23,16 +23,16 @@ GraphicsContext::GraphicsContext() : initialized(false) {
 GraphicsContext::GraphicsContext(GraphicsProperties &gp) : initialized(false) {
     properties = gp;
     if (!glfwInit()) {
-        throw std::runtime_error("GLFW failed to initialize");
+        throw std::runtime_error("Graphics Context failed to initialize");
     }
     initialized = true;
-    std::cout << "GLFW initialized successfully" << std::endl;
+    std::cout << "Graphics Context initialized successfully" << std::endl;
 }
 
 GraphicsContext::~GraphicsContext() {
     if (initialized) {
         glfwTerminate();
-        std::cout << "GLFW terminated" << std::endl;
+        std::cout << "Graphics Context terminated" << std::endl;
     }
 }
 
