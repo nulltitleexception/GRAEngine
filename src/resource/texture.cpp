@@ -51,6 +51,14 @@ GLuint Texture::getID() {
     return id;
 }
 
+int Texture::getWidth() {
+    return width;
+}
+
+int Texture::getHeight(){
+    return height;
+}
+
 void Texture::bind() {
     glBindTexture(GL_TEXTURE_2D, id);
 }

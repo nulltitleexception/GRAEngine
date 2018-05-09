@@ -93,6 +93,11 @@ Mesh::Mesh(float *verts, long vnum) {
     this->create(verts, vnum);
 }
 
+Mesh::~Mesh() {
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}
+
 void Mesh::create(float *verts, long vnum) {
     vertnum = vnum;
     glGenVertexArrays(1, &VAO);
@@ -119,6 +124,42 @@ void Mesh::Render() {
     glEnableVertexAttribArray(2);
     glDrawArrays(GL_TRIANGLES, 0, vertnum);
     glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(0);
+    glBindVertexArray(0);
+
+}
+
+Mesh2D::Mesh2D(float *verts, long vnum) {
+    this->create(verts, vnum);
+}
+
+Mesh2D::~Mesh2D() {
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}
+
+void Mesh2D::create(float *verts, long vnum) {
+    vertnum = vnum;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertnum * 4 * sizeof(float), verts, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(float) * 4, (void *) 0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, false, sizeof(float) * 4, (void *) (sizeof(float) * 2));
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(0);
+    glBindVertexArray(0);
+}
+
+void Mesh2D::Render() {
+    glBindVertexArray(VAO);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glDrawArrays(GL_TRIANGLES, 0, vertnum);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(0);
     glBindVertexArray(0);

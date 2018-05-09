@@ -2,6 +2,7 @@
 #define GRAE_ENGINE_RESOURCE_H
 
 #include "config.h"
+#include "font.h"
 #include "material.h"
 #include "mesh.h"
 #include "resources.h"

@@ -8,6 +8,7 @@
 #include "network/network.h"
 #include "resource/resource.h"
 #include "system/system.h"
+#include "ui/ui.h"
 #include "version/version.h"
 
 #endif //GRAE_ENGINE_ENGINE_H

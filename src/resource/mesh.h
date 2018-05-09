@@ -11,6 +11,23 @@ public:
 
     Mesh(float *verts, long vnum);
 
+    ~Mesh();
+
+    void create(float *verts, long vnum);
+
+    void Render();
+
+private:
+    GLuint VAO, VBO;
+    int vertnum;
+};
+
+class Mesh2D {
+public:
+    Mesh2D(float *verts, long vnum);
+
+    ~Mesh2D();
+
     void create(float *verts, long vnum);
 
     void Render();

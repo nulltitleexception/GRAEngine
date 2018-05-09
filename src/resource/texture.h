@@ -19,6 +19,10 @@ public:
 
     GLuint getID();
 
+    int getWidth();
+
+    int getHeight();
+
     void bind();
 
     void unbind();

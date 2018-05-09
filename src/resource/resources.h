@@ -45,6 +45,16 @@ public:
         in.close();
         return contents.str();
     }
+
+    char* getBytes(){
+        std::ifstream in(myPath);
+        in.seekg(0, in.end);
+        size_t length = in.tellg();
+        in.seekg(0, in.beg);
+        char* contents = new char[length];
+        in.read(contents, length);
+        return contents;
+    }
 };
 namespace PRIVATE {
 class ResourceHandler {
