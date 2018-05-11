@@ -1,6 +1,8 @@
 #ifndef GRAE_ENGINE_SYSTEM_H
 #define GRAE_ENGINE_SYSTEM_H
 
+#include "variables.h"
+
 namespace GRAE {
 class System {
 public:

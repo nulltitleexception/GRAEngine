@@ -3,6 +3,7 @@
 #include "config.h"
 
 #include <iostream>
+#include <algorithm>
 
 namespace GRAE {
 FontData::FontData(std::string path, Resources *res) {
@@ -44,12 +45,28 @@ Text *Font::getText(std::string t, int size) {
         ///throw? this is an error
         std::cout << "Font does not support size " << size << "!" << std::endl;
     }
-    float *v = new float[t.length() * 24];
+    int ws = (int)(std::count(t.begin(), t.end(), ' ') + std::count(t.begin(), t.end(), '\t') +
+             std::count(t.begin(), t.end(), '\n'));
+    float *v = new float[(t.length() - ws) * 24];
     int xi = 0;
     int yi = 0;
-    for (int i = 0; i < t.length(); i++) {
-        int l = data->getPositions(size)[((int) t[i]) * 2];
-        int r = data->getPositions(size)[(((int) t[i]) * 2) + 1];
+    int i = 0;
+    for (int j = 0; j < t.length(); j++) {
+        int l = data->getPositions(size)[((int) t[j]) * 2];
+        int r = data->getPositions(size)[(((int) t[j]) * 2) + 1];
+        if (t[j] == ' ') {
+            xi += (r - l);
+            continue;
+        } else if (t[j] == '\t') {
+            xi += (r - l) * 4;
+            continue;
+        } else if (t[j] == '\n') {
+            int t = data->getTop(size);
+            int b = data->getBottom(size);
+            xi = 0;
+            yi += (b - t);
+            continue;
+        }
         float left = ((float) l) / texture->getWidth();
         float right = ((float) r) / texture->getWidth();
         float top = ((float) data->getTop(size)) / texture->getHeight();
@@ -83,6 +100,7 @@ Text *Font::getText(std::string t, int size) {
         v[(i * 24) + 21] = y1;
         v[(i * 24) + 22] = left;
         v[(i * 24) + 23] = bottom;
+        i++;
     }
 
     return new Text(new Mesh2D(v, t.length() * 6), shader, texture);
