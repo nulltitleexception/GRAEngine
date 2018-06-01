@@ -9,7 +9,7 @@ class Entity;
 class Component {
 public:
     virtual void update(double dt, Entity* parent){}
-    virtual void draw(mat4 m){}
+    virtual void render(mat4 m){}
 };
 }
 

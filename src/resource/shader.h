@@ -59,6 +59,8 @@ public:
 
     void setUniformFloat(std::string s, float f0, float f1, float f2, float f3);
 
+    void setUniformVec4(std::string s, vec4 v);
+
     static void bindModelMatrix(mat4 m);
 
     static void bindEntityMatrix(mat4 m);
@@ -66,6 +68,8 @@ public:
     static void bindViewMatrix(mat4 m);
 
     static void bindProjectionMatrix(mat4 m);
+
+    static void bindDefaultShader(vec4 color = vec4(1));
 
 private:
     GLuint id;

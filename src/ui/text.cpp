@@ -10,6 +10,6 @@ Text::~Text() {
 void Text::draw(mat4 m) {
     shader->bind();
     texture->bind();
-    mesh->Render();
+    mesh->render();
 }
 }

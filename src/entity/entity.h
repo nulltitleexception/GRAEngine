@@ -29,7 +29,7 @@ public:
 
     void update(double dt);
 
-    void draw(mat4 m = mat4());
+    void render(mat4 m = mat4());
 };
 }
 

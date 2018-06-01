@@ -10,7 +10,7 @@ class Var {
 };
 
 template<typename T>
-class Variable : Var {
+class Variable : public Var {
 private:
     T value;
 public:
@@ -38,7 +38,7 @@ public:
 
     template<typename T>
     T get(std::string s) {
-        return ((PRIVATE::Variable <T> *) values[s]).get();
+        return ((PRIVATE::Variable <T> *) values[s])->get();
     }
 
     template<typename T>

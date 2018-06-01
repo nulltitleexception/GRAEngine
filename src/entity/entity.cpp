@@ -9,12 +9,12 @@ namespace GRAE {
         }
     }
 
-    void Entity::draw(mat4 m) {
+    void Entity::render(mat4 m) {
         if (getComponent<Transform>() != nullptr) {
             m *= getComponent<Transform>()->asMatrix();
         }
         for (auto pair : components) {
-            pair.second->draw(m);
+            pair.second->render(m);
         }
     }
 }

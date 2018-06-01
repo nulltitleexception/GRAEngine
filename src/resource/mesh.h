@@ -15,7 +15,11 @@ public:
 
     void create(float *verts, long vnum);
 
-    void Render();
+    void render();
+
+    void renderVerts();
+
+    void renderWireframe();
 
 private:
     GLuint VAO, VBO;
@@ -30,7 +34,7 @@ public:
 
     void create(float *verts, long vnum);
 
-    void Render();
+    void render();
 
 private:
     GLuint VAO, VBO;

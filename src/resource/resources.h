@@ -55,6 +55,16 @@ public:
         in.read(contents, length);
         return contents;
     }
+
+    void createOrOverwrite(char* contents, long size){
+        std::ofstream out(myPath);
+        out.write(contents, size);
+    }
+
+    bool getExists(){
+        std::ifstream in(myPath);
+        return in.good();
+    }
 };
 namespace PRIVATE {
 class ResourceHandler {
@@ -68,7 +78,11 @@ private:
 public:
     Handler(std::string dir) : directory(dir) {}
 
-    virtual ~Handler() {}
+    virtual ~Handler() {
+        for (auto pair : resources) {
+            delete pair.second;
+        }
+    }
 
     virtual T *&operator[](std::string id) { return resources[id]; }
 
@@ -87,6 +101,12 @@ private:
     std::string rootDir;
 public:
     Resources(std::string root) : rootDir(root) {}
+
+    ~Resources(){
+        for (auto pair : handlers) {
+            delete pair.second;
+        }
+    }
 
     template<typename T>
     void initResourceType(std::string dir) {

@@ -1,4 +1,4 @@
-#include "VariableSet.h"
+#include "variables.h"
 
 namespace GRAE {
 VariableSet::VariableSet() {}

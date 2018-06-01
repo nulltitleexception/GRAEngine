@@ -13,13 +13,17 @@ void Model::bind() {
     material->bind();
 }
 
-void Model::render() {
-    mesh->Render();
+void Model::render(mat4 m){
+    bind();
+    Shader::bindModelMatrix(mat4(1));
+    Shader::bindEntityMatrix(m);
+    mesh->render();
 }
 
-void Model::draw(mat4 m){
-    bind();
+void Model::renderOutline(mat4 m, vec4 c){
+    Shader::bindDefaultShader(c);
+    Shader::bindModelMatrix(mat4(1));
     Shader::bindEntityMatrix(m);
-    render();
+    mesh->renderWireframe();
 }
 }

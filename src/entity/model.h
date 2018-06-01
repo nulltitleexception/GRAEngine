@@ -12,8 +12,8 @@ private:
 public:
     Model(std::string s, Resources* res);
     void bind();
-    void render();
-    void draw(mat4 m);
+    void render(mat4 m);
+    void renderOutline(mat4 m, vec4 c = vec4(1));
 };
 }
 

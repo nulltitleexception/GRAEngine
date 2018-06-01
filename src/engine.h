@@ -10,5 +10,6 @@
 #include "system/system.h"
 #include "ui/ui.h"
 #include "version/version.h"
+#include "world/world.h"
 
 #endif //GRAE_ENGINE_ENGINE_H
