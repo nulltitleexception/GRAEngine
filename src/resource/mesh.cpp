@@ -2,8 +2,8 @@
 
 namespace GRAE {
 namespace Util {
-std::vector <std::string> SplitString(std::string s, std::string delimiter) {
-    std::vector <std::string> tokens;
+std::vector<std::string> SplitString(std::string s, std::string delimiter) {
+    std::vector<std::string> tokens;
     int pos = 0;
     while ((pos = s.find(delimiter)) != std::string::npos) {
         tokens.push_back(s.substr(0, pos));
@@ -18,11 +18,11 @@ Mesh::Mesh(std::string path, Resources *res) {
     File cache(path + ".msh");
     if (cache.getExists()) {
         char *contents = cache.getBytes();
-        create(((float *) ((long *) contents) + 1), *((long *) contents));
+        create((float *) (((int *) contents) + 1), *((int *) contents));
         delete contents;
     } else {
         File file(path + ".obj");
-        std::vector <std::string> lines = file.getLines();
+        std::vector<std::string> lines = file.getLines();
         int facenum = 0;
         int vertnum = 0;
         int normnum = 0;
@@ -49,18 +49,18 @@ Mesh::Mesh(std::string path, Resources *res) {
         for (int i = 0; i < lines.size(); i++) {
             if (lines[i][0] == 'v') {
                 if (lines[i][1] == 'n') {
-                    std::vector <std::string> components = Util::SplitString(lines[i], " ");
+                    std::vector<std::string> components = Util::SplitString(lines[i], " ");
                     rawnorms[normpos] = std::stof(components[1]);
                     rawnorms[normpos + 1] = std::stof(components[2]);
                     rawnorms[normpos + 2] = std::stof(components[3]);
                     normpos += 3;
                 } else if (lines[i][1] == 't') {
-                    std::vector <std::string> components = Util::SplitString(lines[i], " ");
+                    std::vector<std::string> components = Util::SplitString(lines[i], " ");
                     rawuvs[uvpos] = std::stof(components[1]);
                     rawuvs[uvpos + 1] = 1 - std::stof(components[2]);
                     uvpos += 2;
                 } else {
-                    std::vector <std::string> components = Util::SplitString(lines[i], " ");
+                    std::vector<std::string> components = Util::SplitString(lines[i], " ");
                     rawverts[vertpos] = std::stof(components[1]);
                     rawverts[vertpos + 1] = std::stof(components[2]);
                     rawverts[vertpos + 2] = std::stof(components[3]);
@@ -68,15 +68,15 @@ Mesh::Mesh(std::string path, Resources *res) {
                 }
             }
         }
-        long contentSize = (facenum * 24 * sizeof(float)) + (sizeof(long));
+        long contentSize = (facenum * 24 * sizeof(float)) + (sizeof(int));
         char *contents = new char[contentSize];
-        float *verts = ((float *) contents) + 1;
+        float *verts = ((float *) ((int *) contents) + 1);
         int facepos = 0;
         for (int i = 0; i < lines.size(); i++) {
             if (lines[i][0] == 'f') {
-                std::vector <std::string> components = GRAE::Util::SplitString(lines[i], " ");
+                std::vector<std::string> components = GRAE::Util::SplitString(lines[i], " ");
                 for (int k = 0; k < 3; k++) {
-                    std::vector <std::string> c = GRAE::Util::SplitString(components[k + 1], "/");
+                    std::vector<std::string> c = GRAE::Util::SplitString(components[k + 1], "/");
                     int vpos = (std::stoi(c[0]) - 1) * 3;
                     int upos = (std::stoi(c[1]) - 1) * 2;
                     int npos = (std::stoi(c[2]) - 1) * 3;
@@ -93,8 +93,12 @@ Mesh::Mesh(std::string path, Resources *res) {
                 }
             }
         }
+        ((int *) contents)[0] = facenum * 3;
         cache.createOrOverwrite(contents, contentSize);
         create(verts, facenum * 3);
+        delete rawverts;
+        delete rawnorms;
+        delete rawuvs;
         delete contents;
     }
 }

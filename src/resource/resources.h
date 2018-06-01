@@ -47,9 +47,8 @@ public:
     }
 
     char* getBytes(){
-        std::ifstream in(myPath);
-        in.seekg(0, in.end);
-        size_t length = in.tellg();
+        std::ifstream in(myPath, std::ios::binary | std::ios::ate);
+        long length = in.tellg();
         in.seekg(0, in.beg);
         char* contents = new char[length];
         in.read(contents, length);
@@ -57,7 +56,7 @@ public:
     }
 
     void createOrOverwrite(char* contents, long size){
-        std::ofstream out(myPath);
+        std::ofstream out(myPath, std::ios::out | std::ios::binary);
         out.write(contents, size);
     }
 
