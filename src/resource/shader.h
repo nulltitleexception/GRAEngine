@@ -8,6 +8,9 @@
 
 namespace GRAE {
 class VertexShader {
+private:
+    GLuint id;
+
 public:
     VertexShader(std::string text);
 
@@ -16,12 +19,12 @@ public:
     inline GLuint get() {
         return id;
     }
-
-private:
-    GLuint id;
 };
 
 class FragmentShader {
+private:
+    GLuint id;
+
 public:
     FragmentShader(std::string text);
 
@@ -30,16 +33,16 @@ public:
     inline GLuint get() {
         return id;
     }
-
-private:
-    GLuint id;
 };
 
 class Shader {
+private:
+    GLuint id;
+
 public:
     Shader(VertexShader vs, FragmentShader fs);
 
-    Shader(std::string filePrefix, Resources *res);
+    Shader(std::string filePrefix, Resources *res, bool &success, std::string &reason);
 
     Shader() {}
 
@@ -70,12 +73,8 @@ public:
     static void bindProjectionMatrix(mat4 m);
 
     static void bindDefaultShader(vec4 color = vec4(1));
-
-private:
-    GLuint id;
 };
 }
-
 
 
 #endif //GRAE_ENGINE_SHADER_H

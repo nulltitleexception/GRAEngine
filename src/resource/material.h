@@ -18,7 +18,7 @@ private:
     Shader *shader;
     MaterialProperties props;
 public:
-    Material(std::string s, Resources *res);
+    Material(std::string s, Resources *res, bool& success, std::string& reason);
 
     void bind();
 };

@@ -3,10 +3,11 @@
 #include "resource/config.h"
 
 namespace GRAE {
-Model::Model(std::string s, Resources *res) {
-    Config cfg(s + ".mdl", res);
-    material = res->get<Material>(cfg.getString("material"));
-    mesh = res->get<Mesh>(cfg.getString("mesh"));
+Model::Model(std::string s, Resources *res, bool& success, std::string& reason) {
+    Config* cfg = res->getFromRoot<Config>(s + ".mdl");
+    material = res->get<Material>(cfg->getString("material"));
+    mesh = res->get<Mesh>(cfg->getString("mesh"));
+    success = true;
 }
 
 void Model::bind() {

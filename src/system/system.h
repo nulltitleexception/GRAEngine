@@ -2,6 +2,7 @@
 #define GRAE_ENGINE_SYSTEM_H
 
 #include "variables.h"
+#include "log.h"
 
 namespace GRAE {
 class System {

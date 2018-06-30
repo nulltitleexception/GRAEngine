@@ -1,6 +1,7 @@
 #include "inputcontext.h"
 
 #include "graphics/window_impl.hpp"
+#include "system/log.h"
 
 #define GLFW_DLL
 
@@ -9,7 +10,7 @@
 namespace GRAE {
 static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (action == GLFW_PRESS) {
-        std::cout << key << " pressed" << std::endl;
+        log->verbose << "Key " << key << " pressed";
     }
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);

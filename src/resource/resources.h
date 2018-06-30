@@ -1,71 +1,21 @@
 #ifndef GRAE_ENGINE_RESOURCES_H
 #define GRAE_ENGINE_RESOURCES_H
 
+#include "system/log.h"
+
 #include <string>
 #include <unordered_map>
 #include <typeinfo>
 #include <typeindex>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include <vector>
 
 namespace GRAE {
-class File {
-private:
-    std::string myPath;
-public:
-    File(std::string path) : myPath(path) {}
-
-    std::vector<std::string> getLines() {
-        std::ifstream in;
-        in.open(myPath);
-        std::vector<std::string> lines;
-        std::string line;
-        if (in.good()) {
-            while (std::getline(in, line)) {
-                lines.push_back(line);
-            }
-        } else {
-            std::cout << "File could not be read: " << myPath << std::endl;
-        }
-        in.close();
-        return lines;
-    }
-
-    std::string getContents() {
-        std::ifstream in;
-        in.open(myPath);
-        std::ostringstream contents;
-        if (in.good()) {
-            contents << in.rdbuf();
-        } else {
-            std::cout << "File could not be read: " << myPath << std::endl;
-        }
-        in.close();
-        return contents.str();
-    }
-
-    char* getBytes(){
-        std::ifstream in(myPath, std::ios::binary | std::ios::ate);
-        long length = in.tellg();
-        in.seekg(0, in.beg);
-        char* contents = new char[length];
-        in.read(contents, length);
-        return contents;
-    }
-
-    void createOrOverwrite(char* contents, long size){
-        std::ofstream out(myPath, std::ios::out | std::ios::binary);
-        out.write(contents, size);
-    }
-
-    bool getExists(){
-        std::ifstream in(myPath);
-        return in.good();
-    }
-};
 namespace PRIVATE {
+template<typename T>
+std::string getTypename() {
+    return typeid(T).name();
+}
+
 class ResourceHandler {
 };
 
@@ -78,6 +28,7 @@ public:
     Handler(std::string dir) : directory(dir) {}
 
     virtual ~Handler() {
+        log->debug << "Freeing all <" << PRIVATE::getTypename<T>() << ">";
         for (auto pair : resources) {
             delete pair.second;
         }
@@ -98,10 +49,30 @@ class Resources {
 private:
     std::unordered_map<std::type_index, PRIVATE::ResourceHandler *> handlers;
     std::string rootDir;
-public:
-    Resources(std::string root) : rootDir(root) {}
+private:
+    template<typename T>
+    T *const &getResource(std::string id) {
+        log->verbose << "Resource<" << PRIVATE::getTypename<T>() << "> Requested: \"" << id << "\"";
+        if (!((PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))]))->resourceExists(id)) {
+            log->info << "Loading Resource<" << PRIVATE::getTypename<T>() << ">: \"" << id << "\"";
+            bool success = false;
+            std::string reason = "";
+            ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))])))[id] = new T(id, this, success, reason);
+            if (!success) {
+                log->err << "Failed to load <" << PRIVATE::getTypename<T>() << ">: " << id << " - " << reason;
+            } else {
+                log->debug << "Successfully Loaded Resource<" << PRIVATE::getTypename<T>() << ">: \"" << id << "\"";
+            }
+        }
+        return ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))])))[id];
+    }
 
-    ~Resources(){
+public:
+    Resources(std::string root) : rootDir(root) {
+        log->info << "Initialized Resources at \"" << root << "\"";
+    }
+
+    ~Resources() {
         for (auto pair : handlers) {
             delete pair.second;
         }
@@ -109,19 +80,22 @@ public:
 
     template<typename T>
     void initResourceType(std::string dir) {
+        log->debug << "Initializing Resource Type <" << PRIVATE::getTypename<T>() << ">";
         handlers[std::type_index(typeid(T))] = new PRIVATE::Handler<T *>(dir);
     }
 
     template<typename T>
     T *const &get(std::string id) {
-        if (!((PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))]))->resourceExists(id)) {
-            ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))])))[id] = new T(
-                    (rootDir.length() > 0 ? rootDir + "/" : "") +
-                    (((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))]))).getDir().length() > 0 ?
-                     ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))]))).getDir() + "/" : "") +
-                    id, this);
-        }
-        return ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))])))[id];
+        return getResource<T>((rootDir.length() > 0 ? rootDir + "/" : "") +
+                              (((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))]))).getDir().length() > 0
+                               ? ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))]))).getDir() + "/"
+                               : "") + id);
+    }
+
+
+    template<typename T>
+    T *const &getFromRoot(std::string id) {
+        return getResource<T>(id);
     }
 };
 }

@@ -5,14 +5,17 @@
 #include "graphics/graphics.h"
 
 namespace GRAE {
-class Model : public Component{
+class Model : public Component {
 private:
     Material *material;
     Mesh *mesh;
 public:
-    Model(std::string s, Resources* res);
+    Model(std::string s, Resources *res, bool& success, std::string& reason);
+
     void bind();
+
     void render(mat4 m);
+
     void renderOutline(mat4 m, vec4 c = vec4(1));
 };
 }

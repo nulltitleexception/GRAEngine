@@ -1,8 +1,8 @@
 #include "config.h"
 
 namespace GRAE {
-Config::Config(std::string file, Resources *res) {
-    this->load(file);
+Config::Config(std::string file, Resources *res, bool& success, std::string& reason) {
+    success = this->load(file);
 }
 
 std::string Config::getString(std::string id) {
@@ -34,5 +34,6 @@ bool Config::load(std::string path) {
             }
         }
     }
+    return true;
 }
 }

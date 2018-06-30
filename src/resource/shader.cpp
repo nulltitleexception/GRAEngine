@@ -1,16 +1,19 @@
 #include "shader.h"
 
+#include "system/log.h"
+
 namespace GRAE {
 void errCall(GLuint id) {
     GLint compileSuccess = 0;
     glGetShaderiv(id, GL_COMPILE_STATUS, &compileSuccess);
     if (compileSuccess == GL_FALSE) {
-        std::cout << "Shader compilation failed!: " << std::endl;
         GLint logLen = 0;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &logLen);
         std::vector<GLchar> errlog(logLen);
         glGetShaderInfoLog(id, logLen, &logLen, &errlog[0]);
-        printf("%s\n", &(errlog[0]));
+        std::string slog(errlog.begin(), errlog.end());
+        log->err << "Shader compilation failed!";
+        log->verbose << slog;
     }
 }
 
@@ -45,7 +48,7 @@ Shader::Shader(VertexShader vs, FragmentShader fs) {
     glLinkProgram(id);
 }
 
-Shader::Shader(std::string filePrefix, Resources *res) {
+Shader::Shader(std::string filePrefix, Resources *res, bool &success, std::string &reason) {
     File vf(filePrefix + "_vert.glsl");
     VertexShader vs(vf.getContents());
     File ff(filePrefix + "_frag.glsl");
@@ -54,6 +57,7 @@ Shader::Shader(std::string filePrefix, Resources *res) {
     glAttachShader(id, vs.get());
     glAttachShader(id, fs.get());
     glLinkProgram(id);
+    success = true;
 }
 
 Shader::~Shader() {

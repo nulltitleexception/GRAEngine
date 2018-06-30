@@ -1,7 +1,7 @@
 #ifndef GRAE_ENGINE_CONFIG_H
 #define GRAE_ENGINE_CONFIG_H
 
-#include "Resources.h"
+#include "resources.h"
 #include <string>
 #include <fstream>
 #include <unordered_map>
@@ -15,7 +15,7 @@ class Config {
 private:
     std::unordered_map<std::string, std::string> values;
 public:
-    Config(std::string file, Resources* res);
+    Config(std::string file, Resources *res, bool& success, std::string& reason);
 
     std::string getString(std::string id);
 

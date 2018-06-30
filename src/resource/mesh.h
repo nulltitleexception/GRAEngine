@@ -7,7 +7,7 @@
 namespace GRAE {
 class Mesh {
 public:
-    Mesh(std::string path, Resources *res);
+    Mesh(std::string path, Resources *res, bool& success, std::string& reason);
 
     Mesh(float *verts, long vnum);
 

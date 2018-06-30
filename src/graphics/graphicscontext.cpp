@@ -1,7 +1,6 @@
 #include "graphicscontext.h"
 
-#include <iostream>
-#include <stdexcept>
+#include "system/log.h"
 
 #define GLFW_DLL
 
@@ -13,8 +12,8 @@ GraphicsProperties::GraphicsProperties() {
 }
 
 GraphicsProperties::GraphicsProperties(Config *cfg) {
-GLMajor = cfg->getInt("OpenGL Major");
-GLMinor = cfg->getInt("OpenGL Minor");
+    GLMajor = cfg->getInt("OpenGL Major");
+    GLMinor = cfg->getInt("OpenGL Minor");
 }
 
 GraphicsContext::GraphicsContext() : initialized(false) {
@@ -26,13 +25,13 @@ GraphicsContext::GraphicsContext(GraphicsProperties &gp) : initialized(false) {
         throw std::runtime_error("Graphics Context failed to initialize");
     }
     initialized = true;
-    std::cout << "Graphics Context initialized successfully" << std::endl;
+    log->high << "Graphics Context initialized successfully";
 }
 
 GraphicsContext::~GraphicsContext() {
     if (initialized) {
         glfwTerminate();
-        std::cout << "Graphics Context terminated" << std::endl;
+        log->high << "Graphics Context terminated";
     }
 }
 

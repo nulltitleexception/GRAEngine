@@ -13,7 +13,7 @@ private:
     int width;
     int height;
 public:
-    Texture(std::string name, Resources *res);
+    Texture(std::string name, Resources *res, bool& success, std::string& reason);
 
     ~Texture();
 

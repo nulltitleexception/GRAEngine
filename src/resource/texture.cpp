@@ -1,9 +1,11 @@
 #include "texture.h"
 
+#include "system/log.h"
+
 #include "IL/il.h"
 
 namespace GRAE {
-Texture::Texture(std::string name, Resources *res) {
+Texture::Texture(std::string name, Resources *res, bool &success, std::string &reason) {
     static bool ilInited = false;
     if (!ilInited) {
         ilInited = true;
@@ -13,7 +15,7 @@ Texture::Texture(std::string name, Resources *res) {
     ilGenImages(1, &ilid);
     ilBindImage(ilid);
     if (ilLoadImage((name + ".png").c_str()) == IL_FALSE) {
-        std::cout << "Failed to open texture: " << name << std::endl;
+        log->err << "Failed to open texture: " << name;
 
         width = 1;
         height = 1;
@@ -38,6 +40,7 @@ Texture::Texture(std::string name, Resources *res) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
         ilDeleteImages(1, &ilid);
     }
+    success = true;
 }
 
 Texture::~Texture() {
@@ -55,7 +58,7 @@ int Texture::getWidth() {
     return width;
 }
 
-int Texture::getHeight(){
+int Texture::getHeight() {
     return height;
 }
 

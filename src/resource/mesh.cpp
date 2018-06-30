@@ -1,5 +1,7 @@
 #include "mesh.h"
 
+#include "system/log.h"
+
 namespace GRAE {
 namespace Util {
 std::vector<std::string> SplitString(std::string s, std::string delimiter) {
@@ -14,13 +16,9 @@ std::vector<std::string> SplitString(std::string s, std::string delimiter) {
 }
 }
 
-Mesh::Mesh(std::string path, Resources *res) {
+Mesh::Mesh(std::string path, Resources *res, bool& success, std::string& reason) {
     File cache(path + ".msh");
-    if (cache.getExists()) {
-        char *contents = cache.getBytes();
-        create((float *) (((int *) contents) + 1), *((int *) contents));
-        delete contents;
-    } else {
+    if (!cache.getExists()) {
         File file(path + ".obj");
         std::vector<std::string> lines = file.getLines();
         int facenum = 0;
@@ -93,14 +91,27 @@ Mesh::Mesh(std::string path, Resources *res) {
                 }
             }
         }
-        ((int *) contents)[0] = facenum * 3;
-        cache.createOrOverwrite(contents, contentSize);
-        create(verts, facenum * 3);
         delete rawverts;
         delete rawnorms;
         delete rawuvs;
+        ((int *) contents)[0] = facenum * 3;
+        cache.createOrOverwrite(contents, contentSize);
         delete contents;
+        //create(verts, facenum * 3);
+        char *data = cache.getBytes();
+        create((float *) (((int *) data) + 1), *((int *) data));
+        delete data;
+    } else {
+        try {
+            char *data = cache.getBytes();
+            create((float *) (((int *) data) + 1), *((int *) data));
+            delete data;
+        } catch (std::bad_alloc &) {
+            log->err << "FATAL ERROR ALLOCATING MESH BUFFER IN RAM";
+            throw;
+        }
     }
+    success = true;
 }
 
 Mesh::Mesh(float *verts, long vnum) {
