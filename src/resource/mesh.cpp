@@ -1,6 +1,9 @@
 #include "mesh.h"
 
+#include "system/file.h"
 #include "system/log.h"
+
+#include <glad/glad.h>
 
 namespace GRAE {
 namespace Util {
@@ -16,10 +19,130 @@ std::vector<std::string> SplitString(std::string s, std::string delimiter) {
 }
 }
 
-Mesh::Mesh(std::string path, Resources *res, bool& success, std::string& reason) {
+Mesh::Mesh(GRAE::Resources *res) {
+    //represent an exclamation point as a cube with an inverted truncated pyramid above it
+    // so essentially 2 cubes worth of verts
+    // 2 (solids) * 6 (faces) * 2 (triangles) * 3 (verts) = 72
+    int vertnum = 72;
+    //lower
+    const float xp0 = 0.25f;
+    const float yp0 = -0.5f;
+    const float zp0 = 0.25f;
+    const float xn0 = -0.25f;
+    const float yn0 = -1.0f;
+    const float zn0 = -0.25f;
+    //upper
+    const float xp1 = 0.25f;
+    const float xp2 = 0.35f;
+    const float yp1 = 1.0f;
+    const float zp1 = 0.25f;
+    const float zp2 = 0.35f;
+    const float xn1 = -0.25f;
+    const float xn2 = -0.35f;
+    const float yn1 = -0.25f;
+    const float zn1 = -0.25f;
+    const float zn2 = -0.35f;
+    // 72 (verts) * 8 (components) = 576
+    float verts[576] = {
+            //cube from (-0.25, -1, -0.25) to (0.25, -0.75, 0.25)
+            //-y face
+            xp0, yn0, zp0, 0, -1, 0, 0, 0,
+            xp0, yn0, zn0, 0, -1, 0, 0, 0,
+            xn0, yn0, zn0, 0, -1, 0, 0, 0,
+            xn0, yn0, zn0, 0, -1, 0, 0, 0,
+            xn0, yn0, zp0, 0, -1, 0, 0, 0,
+            xp0, yn0, zp0, 0, -1, 0, 0, 0,
+            //+y face
+            xn0, yp0, zn0, 0, 1, 0, 0, 0,
+            xn0, yp0, zp0, 0, 1, 0, 0, 0,
+            xp0, yp0, zp0, 0, 1, 0, 0, 0,
+            xp0, yp0, zp0, 0, 1, 0, 0, 0,
+            xp0, yp0, zn0, 0, 1, 0, 0, 0,
+            xn0, yp0, zn0, 0, 1, 0, 0, 0,
+            //-x face
+            xn0, yp0, zp0, -1, 0, 0, 0, 0,
+            xn0, yp0, zn0, -1, 0, 0, 0, 0,
+            xn0, yn0, zn0, -1, 0, 0, 0, 0,
+            xn0, yn0, zn0, -1, 0, 0, 0, 0,
+            xn0, yn0, zp0, -1, 0, 0, 0, 0,
+            xn0, yp0, zp0, -1, 0, 0, 0, 0,
+            //+x face
+            xp0, yn0, zn0, 1, 0, 0, 0, 0,
+            xp0, yn0, zp0, 1, 0, 0, 0, 0,
+            xp0, yp0, zp0, 1, 0, 0, 0, 0,
+            xp0, yp0, zp0, 1, 0, 0, 0, 0,
+            xp0, yp0, zn0, 1, 0, 0, 0, 0,
+            xp0, yn0, zn0, 1, 0, 0, 0, 0,
+            //-z face
+            xp0, yp0, zn0, 0, 0, -1, 0, 0,
+            xp0, yn0, zn0, 0, 0, -1, 0, 0,
+            xn0, yn0, zn0, 0, 0, -1, 0, 0,
+            xn0, yn0, zn0, 0, 0, -1, 0, 0,
+            xn0, yp0, zn0, 0, 0, -1, 0, 0,
+            xp0, yp0, zn0, 0, 0, -1, 0, 0,
+            //+z face
+            xn0, yn0, zp0, 0, 0, 1, 0, 0,
+            xn0, yp0, zp0, 0, 0, 1, 0, 0,
+            xp0, yp0, zp0, 0, 0, 1, 0, 0,
+            xp0, yp0, zp0, 0, 0, 1, 0, 0,
+            xp0, yn0, zp0, 0, 0, 1, 0, 0,
+            xn0, yn0, zp0, 0, 0, 1, 0, 0,
+            //truncated pyramid (-0.25, -1, -0.25) to (0.25, -0.75, 0.25)
+            //-y face
+            xp1, yn1, zp1, 0, -1, 0, 0, 0,
+            xp1, yn1, zn1, 0, -1, 0, 0, 0,
+            xn1, yn1, zn1, 0, -1, 0, 0, 0,
+            xn1, yn1, zn1, 0, -1, 0, 0, 0,
+            xn1, yn1, zp1, 0, -1, 0, 0, 0,
+            xp1, yn1, zp1, 0, -1, 0, 0, 0,
+            //+y face
+            xn2, yp1, zn2, 0, 1, 0, 0, 0,
+            xn2, yp1, zp2, 0, 1, 0, 0, 0,
+            xp2, yp1, zp2, 0, 1, 0, 0, 0,
+            xp2, yp1, zp2, 0, 1, 0, 0, 0,
+            xp2, yp1, zn2, 0, 1, 0, 0, 0,
+            xn2, yp1, zn2, 0, 1, 0, 0, 0,
+            //-x face
+            xn2, yp1, zp2, -1, 0, 0, 0, 0,
+            xn2, yp1, zn2, -1, 0, 0, 0, 0,
+            xn1, yn1, zn1, -1, 0, 0, 0, 0,
+            xn1, yn1, zn1, -1, 0, 0, 0, 0,
+            xn1, yn1, zp1, -1, 0, 0, 0, 0,
+            xn2, yp1, zp2, -1, 0, 0, 0, 0,
+            //+x face
+            xp1, yn1, zn1, 1, 0, 0, 0, 0,
+            xp1, yn1, zp1, 1, 0, 0, 0, 0,
+            xp2, yp1, zp2, 1, 0, 0, 0, 0,
+            xp2, yp1, zp2, 1, 0, 0, 0, 0,
+            xp2, yp1, zn2, 1, 0, 0, 0, 0,
+            xp1, yn1, zn1, 1, 0, 0, 0, 0,
+            //-z face
+            xp2, yp1, zn2, 0, 0, -1, 0, 0,
+            xp1, yn1, zn1, 0, 0, -1, 0, 0,
+            xn1, yn1, zn1, 0, 0, -1, 0, 0,
+            xn1, yn1, zn1, 0, 0, -1, 0, 0,
+            xn2, yp1, zn2, 0, 0, -1, 0, 0,
+            xp2, yp1, zn2, 0, 0, -1, 0, 0,
+            //+z face
+            xn1, yn1, zp1, 0, 0, 1, 0, 0,
+            xn2, yp1, zp2, 0, 0, 1, 0, 0,
+            xp2, yp1, zp2, 0, 0, 1, 0, 0,
+            xp2, yp1, zp2, 0, 0, 1, 0, 0,
+            xp1, yn1, zp1, 0, 0, 1, 0, 0,
+            xn1, yn1, zp1, 0, 0, 1, 0, 0,
+    };
+    create(verts, vertnum);
+}
+
+Mesh::Mesh(std::string path, Resources *res, bool &success, std::string &reason) {
     File cache(path + ".msh");
     if (!cache.getExists()) {
         File file(path + ".obj");
+        if (!file.getExists()){
+            success = false;
+            reason = "File not found!";
+            return;
+        }
         std::vector<std::string> lines = file.getLines();
         int facenum = 0;
         int vertnum = 0;

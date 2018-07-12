@@ -2,12 +2,13 @@
 #define GRAE_ENGINE_MESH_H
 
 #include "Resources.h"
-#include <glad/glad.h>
 
 namespace GRAE {
 class Mesh {
 public:
-    Mesh(std::string path, Resources *res, bool& success, std::string& reason);
+    explicit Mesh(Resources *res);
+
+    Mesh(std::string path, Resources *res, bool &success, std::string &reason);
 
     Mesh(float *verts, long vnum);
 
@@ -22,7 +23,7 @@ public:
     void renderWireframe();
 
 private:
-    GLuint VAO, VBO;
+    unsigned int VAO, VBO;
     int vertnum;
 };
 
@@ -37,7 +38,7 @@ public:
     void render();
 
 private:
-    GLuint VAO, VBO;
+    unsigned int VAO, VBO;
     int vertnum;
 };
 }

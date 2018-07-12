@@ -41,6 +41,8 @@ public:
 
     void acquire();//acquires Window render context
 
+    void clear(bool color = true, bool depth = true);
+
     bool closeRequested();
 
     void swap();

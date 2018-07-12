@@ -15,7 +15,11 @@ class Config {
 private:
     std::unordered_map<std::string, std::string> values;
 public:
-    Config(std::string file, Resources *res, bool& success, std::string& reason);
+    explicit Config(Resources *res);
+
+    Config(std::string file, Resources *res, bool &success, std::string &reason);
+
+    std::vector<std::string> getKeys();
 
     std::string getString(std::string id);
 

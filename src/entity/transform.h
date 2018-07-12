@@ -9,6 +9,7 @@ private:
     vec4 pos, rot, scale;
 public:
     Transform();
+
     vec4 &getPos();
 
     vec4 &getRot();

@@ -8,8 +8,11 @@ class Entity;
 
 class Component {
 public:
-    virtual void update(double dt, Entity* parent){}
-    virtual void render(mat4 m){}
+    virtual ~Component() {}
+
+    virtual void update(double dt, Entity *parent) {}
+
+    virtual void render(mat4 m) {}
 };
 }
 

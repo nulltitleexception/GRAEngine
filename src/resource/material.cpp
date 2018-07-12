@@ -1,7 +1,14 @@
 #include "material.h"
 
 namespace GRAE {
-Material::Material(std::string s, Resources *res, bool& success, std::string& reason) {
+Material::Material(GRAE::Resources *res) {
+    tex = res->get<Texture>();
+    shader = res->get<Shader>();
+    props.shininess = 0;
+    props.specularity = 0;
+}
+
+Material::Material(std::string s, Resources *res, bool &success, std::string &reason) {
     Config cfg(s + ".mtrl", res, success, reason);
     tex = res->get<Texture>(cfg.getString("texture"));
     shader = res->get<Shader>(cfg.getString("shader"));

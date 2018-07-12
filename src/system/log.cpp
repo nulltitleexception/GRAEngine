@@ -8,8 +8,15 @@ std::string levelNames[6] = {
 };
 }
 
-Log::Log(std::string path, Level l) : level(l), shouldPrint(true), file(path),
-                                                                      inner(new PRIVATE::Logs(this)) {}
+Log::Log(std::string p, Level l) : level(l), shouldPrint(true), path(p), file(p, std::ios::out | std::ios::app),
+                                      inner(new PRIVATE::Logs(this)) {}
+
+Log::~Log() {
+    file << std::flush;
+    std::cout << std::flush;
+    file.close();
+    delete inner;
+}
 
 PRIVATE::Logs *Log::operator->() {
     delete inner;
@@ -20,19 +27,20 @@ PRIVATE::Logs *Log::operator->() {
 Log &Log::operator<<(const Level &l) {
     shouldPrint = (l <= level);
     if (shouldPrint) {
-        std::cout << std::endl << "<" << PRIVATE::levelNames[static_cast<int>(l)] << ">: ";
+        std::cout << "\n" << "<" << PRIVATE::levelNames[static_cast<int>(l)] << ">: ";
     }
-    std::stringstream ss;
-    ss << std::endl << "<" << PRIVATE::levelNames[static_cast<int>(l)] << ">: ";
-    file.append(ss.str());
+    file << "\n<" << PRIVATE::levelNames[static_cast<int>(l)] << ">: ";
 }
 
 void Log::setFilePath(std::string s) {
-    file = File(s);
+    path = s;
+    file.close();
+    file.open(s, std::ios::out | std::ios::app);
 }
 
 void Log::resetLogFile() {
-    file.createOrOverwrite("Log:\n");
+    file.close();
+    file.open(path, std::ofstream::out | std::ofstream::trunc);
 }
 
 void Log::setLevel(Level l) {

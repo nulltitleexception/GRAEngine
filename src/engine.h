@@ -7,6 +7,7 @@
 #include "math/math.h"
 #include "meta/meta.h"
 #include "network/network.h"
+#include "program/program.h"
 #include "resource/resource.h"
 #include "system/system.h"
 #include "ui/ui.h"

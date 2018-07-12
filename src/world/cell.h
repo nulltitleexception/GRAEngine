@@ -9,11 +9,11 @@
 
 namespace GRAE {
 class Cell {
-private:
+public:
     std::vector<Entity*> entities;
 public:
     Cell();
-    Cell(std::string s, Resources* res);
+    Cell(std::string path, Resources *res, bool& success, std::string& reason);
     ~Cell();
     void update(double dt);
     void render();

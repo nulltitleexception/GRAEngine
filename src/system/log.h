@@ -1,9 +1,8 @@
 #ifndef GRAE_ENGINE_LOG_H
 #define GRAE_ENGINE_LOG_H
 
-#include "system/file.h"
-
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <memory>
 
@@ -25,10 +24,13 @@ public:
 private:
     Level level;
     bool shouldPrint;
-    File file;
+    std::string path;
+    std::ofstream file;
     PRIVATE::Logs* inner;
 public:
-    Log(std::string path = "log", Level l = Level::Info);
+    Log(std::string p = "log", Level l = Level::Info);
+
+    ~Log();
 
     PRIVATE::Logs *operator->();
 
@@ -37,9 +39,7 @@ public:
         if (shouldPrint) {
             std::cout << t;
         }
-        std::stringstream ss;
-        ss << t;
-        file.append(ss.str());
+        file << t;
     }
 
     Log &operator<<(const Level &l);

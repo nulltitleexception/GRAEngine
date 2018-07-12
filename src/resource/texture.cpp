@@ -3,8 +3,27 @@
 #include "system/log.h"
 
 #include "IL/il.h"
+#include <glad/glad.h>
 
 namespace GRAE {
+Texture::Texture(Resources *res) {
+    static bool ilInited = false;
+    if (!ilInited) {
+        ilInited = true;
+        ilInit();
+    }
+    width = 1;
+    height = 1;
+    glGenTextures(1, &id);
+    bind();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    unsigned char magenta[] = {255, 0, 255, 255};
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &magenta[0]);
+}
+
 Texture::Texture(std::string name, Resources *res, bool &success, std::string &reason) {
     static bool ilInited = false;
     if (!ilInited) {
@@ -15,19 +34,7 @@ Texture::Texture(std::string name, Resources *res, bool &success, std::string &r
     ilGenImages(1, &ilid);
     ilBindImage(ilid);
     if (ilLoadImage((name + ".png").c_str()) == IL_FALSE) {
-        log->err << "Failed to open texture: " << name;
-
-        width = 1;
-        height = 1;
-        glGenTextures(1, &id);
-        bind();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        unsigned char magenta[] = {255, 0, 255, 255};
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &magenta[0]);
-        ilDeleteImages(1, &ilid);
+        success = false;
     } else {
         width = ilGetInteger(IL_IMAGE_WIDTH);
         height = ilGetInteger(IL_IMAGE_HEIGHT);
@@ -39,8 +46,8 @@ Texture::Texture(std::string name, Resources *res, bool &success, std::string &r
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
         ilDeleteImages(1, &ilid);
+        success = true;
     }
-    success = true;
 }
 
 Texture::~Texture() {

@@ -1,22 +1,29 @@
 #ifndef GRAE_ENGINE_MODEL_H
 #define GRAE_ENGINE_MODEL_H
 
-#include "resource/resource.h"
+#include "resource/material.h"
+#include "resource/mesh.h"
+#include "resource/resources.h"
 #include "graphics/graphics.h"
 
 namespace GRAE {
 class Model : public Component {
 private:
+    Resources *resources;
     Material *material;
     Mesh *mesh;
 public:
-    Model(std::string s, Resources *res, bool& success, std::string& reason);
+    explicit Model(Resources *res);
+
+    Model(std::string s, Resources *res, bool &success, std::string &reason);
 
     void bind();
 
     void render(mat4 m);
 
-    void renderOutline(mat4 m, vec4 c = vec4(1));
+    void renderWithOutline(mat4 m, vec4 c = vec4(1));
+
+    void renderOutlineOnly(mat4 m, vec4 c = vec4(1));
 };
 }
 

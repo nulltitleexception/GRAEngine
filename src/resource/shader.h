@@ -3,43 +3,44 @@
 
 #include "math/math.h"
 #include "resources.h"
-#include <glad/glad.h>
 #include <string>
 
 namespace GRAE {
 class VertexShader {
 private:
-    GLuint id;
+    unsigned int id;
 
 public:
     VertexShader(std::string text);
 
     ~VertexShader();
 
-    inline GLuint get() {
+    inline unsigned int get() {
         return id;
     }
 };
 
 class FragmentShader {
 private:
-    GLuint id;
+    unsigned int id;
 
 public:
     FragmentShader(std::string text);
 
     ~FragmentShader();
 
-    inline GLuint get() {
+    inline unsigned int get() {
         return id;
     }
 };
 
 class Shader {
 private:
-    GLuint id;
+    unsigned int id;
 
 public:
+    explicit Shader(Resources *res);
+
     Shader(VertexShader vs, FragmentShader fs);
 
     Shader(std::string filePrefix, Resources *res, bool &success, std::string &reason);
@@ -50,7 +51,7 @@ public:
 
     void bind();
 
-    GLint getUniformLocation(std::string s);
+    int getUniformLocation(std::string s);
 
     void setUniformInt(std::string s, int i);
 
@@ -71,8 +72,6 @@ public:
     static void bindViewMatrix(mat4 m);
 
     static void bindProjectionMatrix(mat4 m);
-
-    static void bindDefaultShader(vec4 color = vec4(1));
 };
 }
 

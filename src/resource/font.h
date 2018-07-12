@@ -14,7 +14,11 @@ private:
     int num;
     int *data;
 public:
-    FontData(std::string path, Resources *res, bool& success, std::string& reason);
+    FontData(Resources *res);
+
+    FontData(std::string path, Resources *res, bool &success, std::string &reason);
+
+    ~FontData();
 
     int getMaxSize();
 
@@ -33,7 +37,9 @@ private:
     Shader *shader;
     FontData *data;
 public:
-    Font(std::string path, Resources *res, bool& success, std::string& reason);
+    Font(Resources *res);
+
+    Font(std::string path, Resources *res, bool &success, std::string &reason);
 
     Text *getText(std::string t, int size = 12);
 };

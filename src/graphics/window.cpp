@@ -27,12 +27,20 @@ Window::Window(GraphicsContext *g, WindowProperties &windowData) : properties(wi
     Impl = new Window_Impl(glfwCreateWindow(windowData.width, windowData.height,
                                             &windowData.title[0], NULL, NULL));
     if (!Impl->window) {
+        log->err << "Failed to create window";
         throw std::runtime_error("Window creation failed");
     }
     acquire();
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-    glfwSwapInterval(
-            1);//0=vsync false | 1 = vsync true | 2 = half frame rate (purpose???)
+    glfwSwapInterval(1);//0=vsync false | 1 = vsync true | 2 = half frame rate (purpose???)
+
+    log->info << "OpenGL " << glGetString(GL_VERSION);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glClearDepth(1);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     input = new InputContext(this);
 }
 
@@ -41,6 +49,7 @@ Window::~Window() {
     if (Impl->window) {
         glfwDestroyWindow(Impl->window);
     }
+    delete Impl;
 }
 
 Window::Window_Impl *Window::getImpl() {
@@ -63,6 +72,10 @@ void Window::release() {
 void Window::acquire() {
     lock.lock();
     glfwMakeContextCurrent(Impl->window);
+}
+
+void Window::clear(bool color, bool depth) {
+    glClear((color ? GL_COLOR_BUFFER_BIT : 0) | (depth ? GL_DEPTH_BUFFER_BIT : 0));
 }
 
 bool Window::closeRequested() {

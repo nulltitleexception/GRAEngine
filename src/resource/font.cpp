@@ -1,18 +1,27 @@
 #include "font.h"
 
 #include "config.h"
+#include "system/file.h"
 #include "system/log.h"
 
 #include <algorithm>
 
 namespace GRAE {
-FontData::FontData(std::string path, Resources *res, bool& success, std::string& reason) {
+FontData::FontData(GRAE::Resources *res) {
+    data = nullptr;
+    maxSize = -1;
+    num = 0;
+}
+
+FontData::FontData(std::string path, Resources *res, bool &success, std::string &reason) {
     File file(path + ".fdat");
     data = (int *) file.getBytes();
     maxSize = *((int *) data);
     num = *(((int *) data) + 1);
     success = true;
 }
+
+FontData::~FontData() { delete[] ((char *) data); }
 
 int FontData::getMaxSize() {
     return maxSize;
@@ -34,6 +43,12 @@ int FontData::getBottom(int size) {
     return *(data + 3 + ((num + 1) * (size - 1) * 2));
 }
 
+Font::Font(Resources *res) {
+    texture = res->get<Texture>();
+    shader = res->get<Shader>();
+    data = res->get<FontData>();
+}
+
 Font::Font(std::string path, Resources *res, bool &success, std::string &reason) {
     Config cfg(path + ".fnt", res, success, reason);
     texture = res->get<Texture>(cfg.getString("texture"));
@@ -43,7 +58,6 @@ Font::Font(std::string path, Resources *res, bool &success, std::string &reason)
 
 Text *Font::getText(std::string t, int size) {
     if (size > data->getMaxSize()) {
-        ///throw? this is an error
         log->err << "Font does not support size " << size << "!";
     }
     int ws = (int) (std::count(t.begin(), t.end(), ' ') + std::count(t.begin(), t.end(), '\t') +

@@ -1,12 +1,17 @@
 #ifndef GRAE_ENGINE_ENTITY_H
 #define GRAE_ENGINE_ENTITY_H
 
-#include "transform.h"
-#include "model.h"
-
 #include "component.h"
+#include "model.h"
+#include "transform.h"
+#include "entityschematic.h"
+
+#include "resource/resources.h"
 #include "math/math.h"
+
 #include <unordered_map>
+#include <vector>
+#include <memory>
 #include <typeinfo>
 #include <typeindex>
 
@@ -14,17 +19,27 @@ namespace GRAE {
 class Entity : Component {
 private:
     std::unordered_map<std::type_index, Component *> components;
+    std::vector<std::unique_ptr<Component>> owned;
 public:
     Entity();
 
+    explicit Entity(EntitySchematic *schematic);
+
     template<typename T>
-    T *getComponent(){
+    T *getComponent() {
         return (T *) components[std::type_index(typeid(T))];
     }
 
     template<typename T>
-    void addComponent(T *c){
+    void addComponent(T *c) {
         components[std::type_index(typeid(T))] = c;
+    }
+
+    template<typename T>
+    void addComponent() {
+        T *t = new T();
+        owned.push_back(std::unique_ptr<Component>(t));
+        addComponent<T>(t);
     }
 
     void update(double dt);

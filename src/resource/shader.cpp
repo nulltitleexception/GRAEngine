@@ -1,6 +1,9 @@
 #include "shader.h"
 
+#include "system/file.h"
 #include "system/log.h"
+
+#include <glad/glad.h>
 
 namespace GRAE {
 void errCall(GLuint id) {
@@ -41,6 +44,23 @@ FragmentShader::~FragmentShader() {
     glDeleteShader(id);
 }
 
+Shader::Shader(GRAE::Resources *res) {
+    VertexShader vs(
+
+#include "built_in/shader/default_vert.glsl"
+
+    );
+    FragmentShader fs(
+
+#include "built_in/shader/default_frag.glsl"
+
+    );
+    id = glCreateProgram();
+    glAttachShader(id, vs.get());
+    glAttachShader(id, fs.get());
+    glLinkProgram(id);
+}
+
 Shader::Shader(VertexShader vs, FragmentShader fs) {
     id = glCreateProgram();
     glAttachShader(id, vs.get());
@@ -49,14 +69,41 @@ Shader::Shader(VertexShader vs, FragmentShader fs) {
 }
 
 Shader::Shader(std::string filePrefix, Resources *res, bool &success, std::string &reason) {
-    File vf(filePrefix + "_vert.glsl");
-    VertexShader vs(vf.getContents());
-    File ff(filePrefix + "_frag.glsl");
-    FragmentShader fs(ff.getContents());
-    id = glCreateProgram();
-    glAttachShader(id, vs.get());
-    glAttachShader(id, fs.get());
-    glLinkProgram(id);
+    if (filePrefix == "built_in/shader/color") {
+        VertexShader vs(
+
+#include "built_in/shader/color_vert.glsl"
+
+        );
+        FragmentShader fs(
+
+#include "built_in/shader/color_frag.glsl"
+
+        );
+        id = glCreateProgram();
+        glAttachShader(id, vs.get());
+        glAttachShader(id, fs.get());
+        glLinkProgram(id);
+    } else {
+        File vf(filePrefix + "_vert.glsl");
+        if (!vf.getExists()){
+            success = false;
+            reason = "Vertex file not found!";
+            return;
+        }
+        VertexShader vs(vf.getContents());
+        File ff(filePrefix + "_frag.glsl");
+        if (!ff.getExists()){
+            success = false;
+            reason = "Fragment file not found!";
+            return;
+        }
+        FragmentShader fs(ff.getContents());
+        id = glCreateProgram();
+        glAttachShader(id, vs.get());
+        glAttachShader(id, fs.get());
+        glLinkProgram(id);
+    }
     success = true;
 }
 
@@ -129,53 +176,5 @@ void Shader::bindProjectionMatrix(mat4 m) {
     float f[4][4];
     m.toFloatArray(&(f[0][0]));
     glUniformMatrix4fv(6, 1, GL_FALSE, &f[0][0]);
-}
-
-void Shader::bindDefaultShader(vec4 color) {
-    static VertexShader v("#version 430 core\n"
-                                  "\n"
-                                  "layout(location = 0) in vec3 pos;\n"
-                                  "layout(location = 1) in vec3 normal;\n"
-                                  "layout(location = 2) in vec2 UV;\n"
-                                  "\n"
-                                  "layout (location = 3) uniform mat4 model;\n"
-                                  "layout (location = 4) uniform mat4 entity;\n"
-                                  "layout (location = 5) uniform mat4 view;\n"
-                                  "layout (location = 6) uniform mat4 projection;\n"
-                                  "\n"
-                                  "out vec3 pass_normal;\n"
-                                  "out vec3 pass_pos;\n"
-                                  "out vec2 pass_UV;\n"
-                                  "out mat4 pass_view;\n"
-                                  "\n"
-                                  "void main(){\n"
-                                  "    pass_pos = (entity * vec4(pos, 1.0)).xyz;\n"
-                                  "    gl_Position = projection * view * entity * vec4(pos, 1.0);\n"
-                                  "    pass_normal = (entity * vec4(normal, 0)).xyz;\n"
-                                  "    pass_UV = UV;\n"
-                                  "    pass_view = view;\n"
-                                  "}");
-    static FragmentShader f("#version 430 core\n"
-                                    "\n"
-                                    "in vec3 pass_pos;\n"
-                                    "in vec3 pass_normal;\n"
-                                    "in vec2 pass_UV;\n"
-                                    "in mat4 pass_view;\n"
-                                    "\n"
-                                    "out vec4 fragColor;\n"
-                                    "\n"
-                                    "uniform sampler2D tex;\n"
-                                    "\n"
-                                    "uniform float shininess;\n"
-                                    "uniform float specularity;\n"
-                                    "\n"
-                                    "uniform vec4 color;"
-                                    "\n"
-                                    "void main() {\n"
-                                    "    fragColor = color;\n"
-                                    "}");
-    static Shader s(v, f);
-    s.bind();
-    s.setUniformVec4("color", color);
 }
 }

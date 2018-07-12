@@ -1,8 +1,19 @@
 #include "config.h"
 
 namespace GRAE {
-Config::Config(std::string file, Resources *res, bool& success, std::string& reason) {
+Config::Config(GRAE::Resources *res) {}
+
+Config::Config(std::string file, Resources *res, bool &success, std::string &reason) {
     success = this->load(file);
+}
+
+std::vector<std::string> Config::getKeys() {
+    std::vector<std::string> keys;
+    keys.reserve(values.size());
+    for (auto pair : values) {
+        keys.push_back(pair.first);
+    }
+    return keys;
 }
 
 std::string Config::getString(std::string id) {
@@ -23,6 +34,9 @@ void Config::removeAll() {
 
 bool Config::load(std::string path) {
     std::ifstream file(path);
+    if (!file.is_open()) {
+        return false;
+    }
     std::string line;
     while (std::getline(file, line)) {
         std::string key, val;

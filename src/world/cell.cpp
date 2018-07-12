@@ -1,11 +1,11 @@
-#include "Cell.h"
+#include "cell.h"
 
 namespace GRAE {
 Cell::Cell() {
 
 }
 
-Cell::Cell(std::string s, Resources *res) {
+Cell::Cell(std::string path, Resources *res, bool& success, std::string& reason) {
 
 }
 
