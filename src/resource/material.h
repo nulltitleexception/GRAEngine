@@ -4,7 +4,7 @@
 #include "texture.h"
 #include "shader.h"
 #include "resources.h"
-#include "config.h"
+#include "gen.h"
 
 namespace GRAE {
 struct MaterialProperties {

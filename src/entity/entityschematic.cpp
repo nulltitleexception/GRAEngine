@@ -1,23 +1,22 @@
 #include "entityschematic.h"
 
 #include "entity.h"
-#include "resource/config.h"
+#include "resource/gen.h"
 
 namespace GRAE {
-EntitySchematic::EntitySchematic() {}
-
 EntitySchematic::EntitySchematic(Resources *res) {}
 
 EntitySchematic::EntitySchematic(std::string s, Resources *res, bool &success, std::string &reason) {
-    Config *cfg = res->getFromRoot<Config>(s + ".ent");
-    std::vector<std::string> keys = cfg->getKeys();
+    Gen *gen = res->getFromRoot<Gen>(s + ".ent");
+    std::vector<std::string> keys = gen->getKeys();
     for (auto key : keys) {
-        std::string val = cfg->getString(key);
+        std::string val = gen->getString(key);
         Type *type = TYPES.get(key);
-        if (val.size()) {
-            ref[type->getIndex()] = (Component *) type->load(res, val);
+        if (gen->getSubValues(key) || !val.size()) {
+            Type *inner = val.size() ? TYPES.get(val) : type;
+            init.push_back({type, inner, gen->getSubValues(key)});
         } else {
-            init.push_back(type);
+            ref[type->getIndex()] = (Component *) type->load(res, val);
         }
     }
     success = true;

@@ -9,16 +9,19 @@
 
 namespace GRAE {
 class Entity;
+
 class EntitySchematic : Component {
     friend class Entity;
-
+    struct TypeGen {
+        Type* cast;
+        Type* type;
+        Gen* gen;
+    };
 private:
     std::unordered_map<std::type_index, Component *> ref;
-    std::vector<Type *> init;
+    std::vector<TypeGen> init;
 public:
-    EntitySchematic();
-
-    EntitySchematic(Resources *res);
+    explicit EntitySchematic(Resources *res);
 
     EntitySchematic(std::string s, Resources *res, bool &success, std::string &reason);
 
@@ -31,10 +34,9 @@ public:
 
     template<typename T>
     void addComponent() {
-        init.push_back(TYPES.get<T>());
+        init.push_back({TYPES.get<T>(), nullptr});
     }
 };
 }
-
 
 #endif //GRAE_ENGINE_ENTITYSCHEMATIC_H

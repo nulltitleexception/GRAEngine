@@ -1,6 +1,6 @@
 #include "font.h"
 
-#include "config.h"
+#include "gen.h"
 #include "system/file.h"
 #include "system/log.h"
 
@@ -50,10 +50,10 @@ Font::Font(Resources *res) {
 }
 
 Font::Font(std::string path, Resources *res, bool &success, std::string &reason) {
-    Config cfg(path + ".fnt", res, success, reason);
-    texture = res->get<Texture>(cfg.getString("texture"));
-    shader = res->get<Shader>(cfg.getString("shader"));
-    data = res->get<FontData>(cfg.getString("data"));
+    Gen gen(path + ".fnt", res, success, reason);
+    texture = res->get<Texture>(gen.getString("texture"));
+    shader = res->get<Shader>(gen.getString("shader"));
+    data = res->get<FontData>(gen.getString("data"));
 }
 
 Text *Font::getText(std::string t, int size) {

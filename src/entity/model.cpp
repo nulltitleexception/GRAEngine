@@ -1,6 +1,6 @@
 #include "model.h"
 
-#include "resource/config.h"
+#include "resource/gen.h"
 
 #include <glad/glad.h>
 
@@ -11,9 +11,9 @@ Model::Model(GRAE::Resources *res) : resources(res) {
 }
 
 Model::Model(std::string s, Resources *res, bool &success, std::string &reason) : resources(res) {
-    Config *cfg = res->getFromRoot<Config>(s + ".mdl");
-    material = res->get<Material>(cfg->getString("material"));
-    mesh = res->get<Mesh>(cfg->getString("mesh"));
+    Gen *gen = res->getFromRoot<Gen>(s + ".mdl");
+    material = res->get<Material>(gen->getString("material"));
+    mesh = res->get<Mesh>(gen->getString("mesh"));
     success = true;
 }
 
@@ -46,7 +46,7 @@ void Model::renderWithOutline(mat4 m, vec4 c) {
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     glLineWidth(3);
-    Shader* colorShader = resources->getFromRoot<Shader>("built_in/shader/color");
+    static Shader* colorShader = resources->getFromRoot<Shader>("built_in/shader/color");
     colorShader->bind();
     colorShader->setUniformVec4("color", c);
     Shader::bindModelMatrix(mat4(1));
@@ -80,7 +80,7 @@ void Model::renderOutlineOnly(mat4 m, vec4 c) {
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     glLineWidth(3);
-    Shader* colorShader = resources->getFromRoot<Shader>("built_in/shader/color");
+    static Shader* colorShader = resources->getFromRoot<Shader>("built_in/shader/color");
     colorShader->bind();
     colorShader->setUniformVec4("color", c);
     Shader::bindModelMatrix(mat4(1));

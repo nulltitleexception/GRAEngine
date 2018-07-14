@@ -8,14 +8,20 @@
 #include <string>
 
 namespace GRAE {
+class CellSchematic;
+
 class Cell {
 public:
-    std::vector<Entity*> entities;
+    std::vector<Entity *> entities;
 public:
     Cell();
-    Cell(std::string path, Resources *res, bool& success, std::string& reason);
+
+    explicit Cell(CellSchematic *schematic);
+
     ~Cell();
+
     void update(double dt);
+
     void render();
 };
 }

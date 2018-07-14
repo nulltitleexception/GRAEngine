@@ -1,6 +1,6 @@
 #include "entity.h"
 
-#include "resource/config.h"
+#include "resource/gen.h"
 #include "meta/type.h"
 
 namespace GRAE {
@@ -10,10 +10,11 @@ Entity::Entity(EntitySchematic *schematic) {
     for (auto pair : schematic->ref) {
         components[pair.first] = (Component *) pair.second;
     }
-    for (Type *type :schematic->init) {
-        void *t = type->construct();
+    for (EntitySchematic::TypeGen typegen : schematic->init) {
+        void *t = ((typegen.gen && typegen.gen->size()) ? typegen.type->construct(typegen.gen)
+                                                        : typegen.type->construct());
         owned.push_back(std::unique_ptr<Component>((Component *) t));
-        components[type->getIndex()] = (Component *) t;
+        components[typegen.cast->getIndex()] = (Component *) t;
     }
 }
 

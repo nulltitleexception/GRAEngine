@@ -2,6 +2,7 @@
 #define GRAE_ENGINE_WORLD_H
 
 #include "cell.h"
+#include "cellschematic.h"
 
 namespace GRAE {
 class World {

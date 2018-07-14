@@ -5,6 +5,7 @@
 #include "model.h"
 #include "transform.h"
 #include "entityschematic.h"
+#include "ai.h"
 
 #include "resource/resources.h"
 #include "math/math.h"
@@ -12,7 +13,6 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
-#include <typeinfo>
 #include <typeindex>
 
 namespace GRAE {

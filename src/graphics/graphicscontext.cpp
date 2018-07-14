@@ -11,9 +11,9 @@ namespace GRAE {
 GraphicsProperties::GraphicsProperties() {
 }
 
-GraphicsProperties::GraphicsProperties(Config *cfg) {
-    GLMajor = cfg->getInt("OpenGL Major");
-    GLMinor = cfg->getInt("OpenGL Minor");
+GraphicsProperties::GraphicsProperties(Gen *gen) {
+    GLMajor = gen->getInt("OpenGL Major");
+    GLMinor = gen->getInt("OpenGL Minor");
 }
 
 GraphicsContext::GraphicsContext() : initialized(false) {

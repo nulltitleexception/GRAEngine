@@ -1,7 +1,7 @@
 #ifndef GRAE_ENGINE_GRAPHICSCONTEXT_H
 #define GRAE_ENGINE_GRAPHICSCONTEXT_H
 
-#include "resource/config.h"
+#include "resource/gen.h"
 
 namespace GRAE {
 struct GraphicsProperties {
@@ -10,7 +10,7 @@ struct GraphicsProperties {
 
     GraphicsProperties();
 
-    GraphicsProperties(Config *cfg);
+    GraphicsProperties(Gen *gen);
 };
 
 class GraphicsContext {

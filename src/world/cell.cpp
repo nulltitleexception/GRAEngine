@@ -1,12 +1,14 @@
 #include "cell.h"
+#include "cellschematic.h"
 
 namespace GRAE {
-Cell::Cell() {
+Cell::Cell() {}
 
-}
 
-Cell::Cell(std::string path, Resources *res, bool& success, std::string& reason) {
-
+Cell::Cell(CellSchematic *schematic) {
+    for (EntitySchematic *ent : schematic->ent) {
+        entities.push_back(ent->newInstance());
+    }
 }
 
 Cell::~Cell() {

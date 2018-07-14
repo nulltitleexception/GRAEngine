@@ -2,21 +2,15 @@
 #define GRAE_ENGINE_RESOURCES_H
 
 #include "system/log.h"
+#include "meta/type.h"
 
 #include <string>
 #include <unordered_map>
-#include <typeinfo>
-#include <typeindex>
 #include <vector>
 
 namespace GRAE {
 class Resources;
 namespace PRIVATE {
-template<typename T>
-std::string getTypename() {
-    return typeid(T).name();
-}
-
 class ResourceHandler {
 public:
     virtual ~ResourceHandler() = 0;
@@ -31,7 +25,7 @@ public:
     explicit Handler(std::string dir) : directory(dir) {}
 
     ~Handler() override {
-        log->debug << "Freeing all <" << PRIVATE::getTypename<T>() << ">";
+        log->debug << "Freeing all <" << TYPES.get<T>()->getName() << ">";
         for (auto pair : resources) {
             delete pair.second;
             log->verbose << pair.first << " unloaded";
@@ -60,9 +54,10 @@ public:
     T *resource;
 
     explicit DefaultResourceImpl(Resources *res) : resource(new T(res)) {}
-    ~DefaultResourceImpl(){
+
+    ~DefaultResourceImpl() {
         delete resource;
-        log->verbose << "Default<" << getTypename<T>() << "> unloaded";
+        log->verbose << "Default<" << TYPES.get<T>()->getName() << "> unloaded";
     }
 };
 }
@@ -75,7 +70,7 @@ private:
     template<typename T>
     T *const &getDefault() {
         if (!defaults.count(std::type_index(typeid(T)))) {
-            log->debug << "Loading default Resource<" << PRIVATE::getTypename<T>() << ">";
+            log->debug << "Loading default Resource<" << TYPES.get<T>()->getName() << ">";
             defaults[std::type_index(typeid(T))] = new PRIVATE::DefaultResourceImpl<T>(this);
         }
         return ((PRIVATE::DefaultResourceImpl<T> *) defaults[std::type_index(typeid(T))])->resource;
@@ -83,24 +78,24 @@ private:
 
     template<typename T>
     T *const &getResource(std::string id) {
-        log->verbose << "Resource<" << PRIVATE::getTypename<T>() << "> requested: \"" << id << "\"";
+        log->verbose << "Resource<" << TYPES.get<T>()->getName() << "> requested: \"" << id << "\"";
         if (!handlers.count(std::type_index(typeid(T)))) {
             log->err << "Resource type not initialized!";
-            log->verbose << PRIVATE::getTypename<T>();
+            log->verbose << TYPES.get<T>()->getName();
             return getDefault<T>();
         }
         if (!((PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))]))->resourceExists(id)) {
-            log->info << "Loading Resource<" << PRIVATE::getTypename<T>() << ">: \"" << id << "\"";
+            log->info << "Loading Resource<" << TYPES.get<T>()->getName() << ">: \"" << id << "\"";
             bool success = false;
             std::string reason = "reason unknown";
             T *resource = new T(id, this, success, reason);
             if (!success) {
-                log->err << "Failed to load <" << PRIVATE::getTypename<T>() << ">: " << id << " - " << reason;
+                log->err << "Failed to load <" << TYPES.get<T>()->getName() << ">: " << id << " - " << reason;
                 delete resource;
                 return getDefault<T>();
             } else {
                 ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))])))[id] = resource;
-                log->debug << "Successfully Loaded Resource<" << PRIVATE::getTypename<T>() << ">: \"" << id << "\"";
+                log->debug << "Successfully Loaded Resource<" << TYPES.get<T>()->getName() << ">: \"" << id << "\"";
             }
         }
         return ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))])))[id];
@@ -125,7 +120,7 @@ public:
 
     template<typename T>
     void initResourceType(std::string dir) {
-        log->debug << "Initializing Resource Type <" << PRIVATE::getTypename<T>() << ">";
+        log->debug << "Initializing Resource Type <" << TYPES.get<T>()->getName() << ">";
         handlers[std::type_index(typeid(T))] = new PRIVATE::Handler<T>(dir);
     }
 

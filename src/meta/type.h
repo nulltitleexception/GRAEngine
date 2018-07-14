@@ -1,9 +1,14 @@
 #ifndef GRAE_ENGINE_TYPE_H
 #define GRAE_ENGINE_TYPE_H
 
-#include "resource/resources.h"
+#include <typeindex>
+#include <unordered_map>
+#include <memory>
 
 namespace GRAE {
+class Resources;
+
+class Gen;
 
 enum class TYPE_ID {
 
@@ -12,6 +17,8 @@ enum class TYPE_ID {
 class Type {
 public:
     virtual void *construct()=0;
+
+    virtual void *construct(Gen *gen)=0;
 
     virtual void *load(Resources *res, std::string name)=0;
 
@@ -26,6 +33,8 @@ private:
     std::unordered_map<std::type_index, Type *> indexedTypes;
 public:
     TypeResolver();
+
+    void extend(std::string s, Type* type, std::type_index index);
 
     Type *get(std::string s);
 

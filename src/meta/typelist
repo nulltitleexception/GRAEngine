@@ -1,0 +1,13 @@
+#define TYPELIST(OP) \
+    OP(Model) \
+    OP(Transform) \
+    OP(EntitySchematic) \
+    OP(Gen) \
+    OP(Font) \
+    OP(FontData) \
+    OP(Material) \
+    OP(Mesh) \
+    OP(Shader) \
+    OP(Texture) \
+    OP(CellSchematic) \
+    OP(AI)
