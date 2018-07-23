@@ -26,6 +26,18 @@ Vector4D &Vector4D::operator+=(const Vector4D v) {
     return *this;
 }
 
+Vector4D Vector4D::operator-(const Vector4D v) const {
+    return Vector4D(x - v.x, y - v.y, z - v.z, w - v.w);
+}
+
+Vector4D &Vector4D::operator-=(const Vector4D v) {
+    x -= v.x;
+    y -= v.y;
+    z -= v.z;
+    w -= v.w;
+    return *this;
+}
+
 Vector4D Vector4D::operator*(double scalar) const {
     return {x * scalar, y * scalar, z * scalar, w * scalar};
 }

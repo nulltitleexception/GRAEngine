@@ -11,4 +11,6 @@
     OP(Texture) \
     OP(CellSchematic) \
     OP(AI) \
-    OP(SpinAI)
+    OP(SpinAI) \
+    OP(Physics) \
+    OP(GravityPhysics)

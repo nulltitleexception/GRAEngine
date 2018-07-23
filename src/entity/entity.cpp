@@ -23,7 +23,7 @@ void Entity::update(double dt) {
         pair.second->update(dt, this);
     }
     if (getComponent<AI>() != nullptr && getComponent<Transform>() != nullptr) {
-        double SPEED = 0.001;
+        double SPEED = dt;
         getComponent<Transform>()->getPos() += getComponent<AI>()->getGoalDirection() * SPEED;
         getComponent<Transform>()->setRot(MatUtil::getLookRotation(getComponent<AI>()->getGoalDirection()));
     }

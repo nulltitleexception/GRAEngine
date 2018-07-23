@@ -109,9 +109,9 @@ mat4 rotationZ(double r) {
 
 Matrix4x4D getLookRotation(vec4 direction, vec4 up) {
     mat4 mat(1);
-    vec4 z = direction;
-    vec4 x = up.cross(z);
-    vec4 y = z.cross(x);
+    vec4 z = direction.unit();
+    vec4 x = up.cross(z).unit();
+    vec4 y = z.cross(x).unit();
     mat.m[0][0] = x.x;
     mat.m[0][1] = x.y;
     mat.m[0][2] = x.z;
@@ -121,6 +121,7 @@ Matrix4x4D getLookRotation(vec4 direction, vec4 up) {
     mat.m[2][0] = z.x;
     mat.m[2][1] = z.y;
     mat.m[2][2] = z.z;
+    return mat;
 }
 
 mat4 getOrthographic(double width, double height) {

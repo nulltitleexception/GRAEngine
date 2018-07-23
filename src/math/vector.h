@@ -17,6 +17,10 @@ struct Vector4D {
 
     Vector4D &operator+=(const Vector4D v);
 
+    Vector4D operator-(const Vector4D v) const;
+
+    Vector4D &operator-=(const Vector4D v);
+
     Vector4D operator*(double scalar) const;
 
     double operator*(Vector4D rhs) const;
