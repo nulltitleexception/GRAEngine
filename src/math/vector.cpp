@@ -47,7 +47,7 @@ double Vector4D::sqmag() const {
 }
 
 double Vector4D::mag() const {
-    return sqrt(sqmag();
+    return sqrt(sqmag());
 }
 
 double Vector4D::componentInDirection(Vector4D rhs) const {

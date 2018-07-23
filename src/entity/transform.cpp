@@ -1,9 +1,9 @@
 #include "transform.h"
 
 namespace GRAE {
-Transform::Transform() : pos(), rot(), scale(1) {}
+Transform::Transform() : pos(), rot(), scale(1), rotMat(), useRotMat(false) {}
 
-Transform::Transform(Gen *gen) : pos(), rot(), scale(1) {
+Transform::Transform(Gen *gen) : pos(), rot(), scale(1), rotMat(), useRotMat(false) {
     if (gen) {
         if (gen->getSubValues("pos")) {
             pos = vec4(gen->getSubValues("pos"));
@@ -29,8 +29,20 @@ vec4 &Transform::getscale() {
     return scale;
 }
 
+void Transform::setRot(mat4 m) {
+    rotMat = m;
+    useRotMat = true;
+}
+
 mat4 Transform::asMatrix() {
-    return MatUtil::translation(pos.x, pos.y, pos.z) * MatUtil::rotationX(rot.x) * MatUtil::rotationZ(rot.z) *
-           MatUtil::rotationY(rot.y) * MatUtil::scale(scale.x, scale.y, scale.z);
+    if (useRotMat) {
+        return MatUtil::translation(pos.x, pos.y, pos.z) *
+               rotMat *
+               MatUtil::scale(scale.x, scale.y, scale.z);
+    } else {
+        return MatUtil::translation(pos.x, pos.y, pos.z) *
+               MatUtil::rotationX(rot.x) * MatUtil::rotationZ(rot.z) * MatUtil::rotationY(rot.y) *
+               MatUtil::scale(scale.x, scale.y, scale.z);
+    }
 }
 }

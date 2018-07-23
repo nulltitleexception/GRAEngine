@@ -8,10 +8,12 @@ namespace GRAE {
 class Transform : public Component {
 private:
     vec4 pos, rot, scale;
+    mat4 rotMat;
+    bool useRotMat;
 public:
     Transform();
 
-    explicit Transform(Gen* gen);
+    explicit Transform(Gen *gen);
 
     vec4 &getPos();
 
@@ -19,9 +21,10 @@ public:
 
     vec4 &getscale();
 
+    void setRot(mat4 m);
+
     mat4 asMatrix();
 };
 }
-
 
 #endif //GRAE_ENGINE_TRANSFORM_H

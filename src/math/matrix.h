@@ -32,6 +32,8 @@ Matrix4x4D rotationY(double r);
 
 Matrix4x4D rotationZ(double r);
 
+Matrix4x4D getLookRotation(vec4 direction, vec4 up = {0, 1, 0, 0});
+
 Matrix4x4D getOrthographic(double width, double height);
 
 Matrix4x4D getPerspective(double fov, double aspect, double nearPlane, double farPlane);

@@ -6,13 +6,31 @@
 
 namespace GRAE {
 class AI : public Component {
-    virtual AI() {
+public:
+    AI() {
 
     }
 
     virtual void update(double dt, Entity *parent) {}
 
     virtual vec4 getGoalDirection() { return vec4(); }
+};
+
+//Builtin AIs
+class SpinAI : public AI {
+private:
+    vec4 direction;
+public:
+    SpinAI() {}
+
+    void update(double dt, Entity *parent) override {
+        direction += direction.cross(vec4(0, 1, 0, 0)) * 0.01;
+        direction.normalize();
+    }
+
+    vec4 getGoalDirection() override {
+        return direction;
+    }
 };
 }
 

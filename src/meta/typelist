@@ -10,4 +10,5 @@
     OP(Shader) \
     OP(Texture) \
     OP(CellSchematic) \
-    OP(AI)
+    OP(AI) \
+    OP(SpinAI)
