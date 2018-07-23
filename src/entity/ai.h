@@ -7,7 +7,7 @@
 namespace GRAE {
 class AI : public Component {
 public:
-    AI() {}
+    AI();
 
     virtual void update(double dt, Entity *parent);
 

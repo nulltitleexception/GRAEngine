@@ -6,6 +6,7 @@
 #include "transform.h"
 #include "entityschematic.h"
 #include "ai.h"
+#include "physics.h"
 
 #include "resource/resources.h"
 #include "math/math.h"

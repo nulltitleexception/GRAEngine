@@ -6,7 +6,7 @@
 namespace GRAE {
 Physics::Physics() : velocity() {}
 
-virtual void Physics::update(double dt, Entity *parent) {}
+void Physics::update(double dt, Entity *parent) {}
 
 GravityPhysics::GravityPhysics() {}
 

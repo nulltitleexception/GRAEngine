@@ -3,9 +3,9 @@
 namespace GRAE {
 AI::AI() {}
 
-virtual void AI::update(double dt, Entity *parent) {}
+void AI::update(double dt, Entity *parent) {}
 
-virtual vec4 AI::getGoalDirection() { return vec4(); }
+vec4 AI::getGoalDirection() { return vec4(); }
 
 SpinAI::SpinAI() : direction(0, 0, 1) {}
 
