@@ -28,7 +28,11 @@ public:
 
     template<typename T>
     T *getComponent() {
-        return (T *) components[std::type_index(typeid(T))];
+        if (components.count(std::type_index(typeid(T)))) {
+            return (T *) components[std::type_index(typeid(T))];
+        } else {
+            return nullptr;
+        }
     }
 
     template<typename T>
