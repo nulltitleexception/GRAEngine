@@ -6,7 +6,7 @@
 namespace GRAE {
 CellSchematic::CellSchematic(Resources *res) {}
 
-CellSchematic::CellSchematic(std::string s, Resources *res, bool &success, std::string &reason){
+CellSchematic::CellSchematic(std::string s, Resources *res, bool &success, std::string &reason) {
     Gen *gen = res->getFromRoot<Gen>(s + ".cell");
     std::vector<std::string> keys = gen->getKeys();
     for (auto key : keys) {
@@ -20,8 +20,8 @@ CellSchematic::CellSchematic(std::string s, Resources *res, bool &success, std::
     success = true;
 }
 
-Cell *CellSchematic::newInstance(){
-    return new Cell(this);
+Cell *CellSchematic::newInstance(World *w) {
+    return new Cell(this, w);
 }
 
 void CellSchematic::addEntity(EntitySchematic *schematic) {

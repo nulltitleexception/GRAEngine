@@ -1,11 +1,10 @@
 #include "matrix.h"
 
-#define _USE_MATH_DEFINES
+#include <cmath>
 
-#include <math.h>
+const double PI = 3.14159265358979323846;
 
 namespace GRAE {
-
 Matrix4x4D::Matrix4x4D(double diag) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
@@ -54,6 +53,57 @@ Vector4D Matrix4x4D::operator*(Vector4D v) {
     return ret;
 }
 
+double det2x2(double m[4][4], int x, int y) {
+    return (m[x % 4][y % 4] * m[(x + 1) % 4][(y + 1) % 4]) - (m[(x + 1) % 4][y % 4] * m[x % 4][(y + 1) % 4]);
+}
+
+double det3x3(double m[4][4], int x, int y) {
+    return (m[x % 4][y % 4] * det2x2(m, (x + 1) % 4, (y + 1) % 4)) - (m[(x + 1) % 4][y % 4] * det2x2(m, (x + 2) % 4, (y + 1) % 4)) + (m[(x + 2) % 4][y % 4] * det2x2(m, (x + 3) % 4, (y + 1) % 4));
+}
+
+double Matrix4x4D::determinant() {
+    return (m[0][3] * det3x3(m, 1, 0))
+           - (m[1][3] * det3x3(m, 2, 0))
+           + (m[2][3] * det3x3(m, 3, 0))
+           - (m[3][3] * det3x3(m, 0, 0));
+}
+
+Matrix4x4D Matrix4x4D::getTranspose() {
+    mat4 mat;
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            mat.m[i][j] = m[j][i];
+        }
+    }
+    return mat;
+}
+
+Matrix4x4D Matrix4x4D::getAdjoint() {
+    mat4 mat;
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            mat.m[j][i] = det3x3(m, i + 1, j + 1);
+        }
+    }
+    return mat;
+}
+
+Matrix4x4D Matrix4x4D::getInverse() {
+    mat4 mat = getAdjoint();
+    double det = determinant();
+    double zero = 0.000001;
+    if (det < zero && det > -zero){
+        log->err << "matrix is singular!";
+    }
+    double invDet = 1.0;
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            mat.m[i][j] *= invDet;
+        }
+    }
+    return mat;
+}
+
 void Matrix4x4D::toFloatArray(float *f) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
@@ -82,29 +132,48 @@ mat4 scale(double x, double y, double z) {
 
 mat4 rotationX(double r) {
     mat4 mat(1);
-    mat.m[1][1] = cos(r);
-    mat.m[2][2] = cos(r);
-    mat.m[1][2] = sin(r);
-    mat.m[2][1] = -sin(r);
+    mat.m[1][1] = std::cos<double>(r);
+    mat.m[2][2] = std::cos<double>(r);
+    mat.m[1][2] = std::sin<double>(r);
+    mat.m[2][1] = -std::sin<double>(r);
     return mat;
 }
 
 mat4 rotationY(double r) {
     mat4 mat(1);
-    mat.m[0][0] = cos(r);
-    mat.m[2][2] = cos(r);
-    mat.m[0][2] = -sin(r);
-    mat.m[2][0] = sin(r);
+    mat.m[0][0] = std::cos<double>(r);
+    mat.m[2][2] = std::cos<double>(r);
+    mat.m[0][2] = -std::sin<double>(r);
+    mat.m[2][0] = std::sin<double>(r);
     return mat;
 }
 
 mat4 rotationZ(double r) {
     mat4 mat(1);
-    mat.m[0][0] = cos(r);
-    mat.m[1][1] = cos(r);
-    mat.m[0][1] = sin(r);
-    mat.m[1][0] = -sin(r);
+    mat.m[0][0] = std::cos<double>(r);
+    mat.m[1][1] = std::cos<double>(r);
+    mat.m[0][1] = std::sin<double>(r);
+    mat.m[1][0] = -std::sin<double>(r);
     return mat;
+}
+
+Matrix4x4D rotationAxis(double r, vec4 axis) {
+    axis.normalize();
+    mat4 mat(1);
+    mat.m[0][0] = ((axis.x * axis.x) * (1 - std::cos<double>(r))) + std::cos<double>(r);
+    mat.m[1][0] = ((axis.x * axis.y) * (1 - std::cos<double>(r))) - (axis.z * std::sin<double>(r));
+    mat.m[2][0] = ((axis.x * axis.z) * (1 - std::cos<double>(r))) + (axis.y * std::sin<double>(r));
+    mat.m[0][1] = ((axis.y * axis.x) * (1 - std::cos<double>(r))) + (axis.z * std::sin<double>(r));
+    mat.m[1][1] = ((axis.y * axis.y) * (1 - std::cos<double>(r))) + std::cos<double>(r);
+    mat.m[2][1] = ((axis.y * axis.z) * (1 - std::cos<double>(r))) - (axis.x * std::sin<double>(r));
+    mat.m[0][2] = ((axis.z * axis.x) * (1 - std::cos<double>(r))) - (axis.y * std::sin<double>(r));
+    mat.m[1][2] = ((axis.z * axis.y) * (1 - std::cos<double>(r))) + (axis.x * std::sin<double>(r));
+    mat.m[2][2] = ((axis.z * axis.z) * (1 - std::cos<double>(r))) + std::cos<double>(r);
+    return mat;
+}
+
+Matrix4x4D rotationEulerVector(vec4 axis) {
+    return rotationAxis(axis.mag(), axis.unit());
 }
 
 Matrix4x4D getLookRotation(vec4 direction, vec4 up) {
@@ -135,8 +204,8 @@ mat4 getOrthographic(double width, double height) {
 
 mat4 getPerspective(double fov, double aspect, double nearPlane, double farPlane) {
     mat4 mat(0);
-    mat.m[0][0] = 1.0 / (tan(M_PI * fov / 360) * aspect);
-    mat.m[1][1] = 1.0 / tan(M_PI * fov / 360);
+    mat.m[0][0] = 1.0 / (std::tan<double>(PI * fov / 360) * aspect);
+    mat.m[1][1] = 1.0 / std::tan<double>(PI * fov / 360);
     mat.m[2][2] = (farPlane + nearPlane) / (nearPlane - farPlane);
     mat.m[3][2] = (2 * farPlane * nearPlane) / (nearPlane - farPlane);
     mat.m[2][3] = -1;

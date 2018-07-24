@@ -17,6 +17,14 @@ public:
 
     Vector4D operator*(Vector4D v);
 
+    double determinant();
+
+    Matrix4x4D getTranspose();
+
+    Matrix4x4D getAdjoint();
+
+    Matrix4x4D getInverse();
+
     void toFloatArray(float *f);
 };
 
@@ -31,6 +39,10 @@ Matrix4x4D rotationX(double r);
 Matrix4x4D rotationY(double r);
 
 Matrix4x4D rotationZ(double r);
+
+Matrix4x4D rotationAxis(double r, vec4 axis);
+
+Matrix4x4D rotationEulerVector(vec4 axis);
 
 Matrix4x4D getLookRotation(vec4 direction, vec4 up = {0, 1, 0, 0});
 

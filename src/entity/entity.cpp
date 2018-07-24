@@ -4,9 +4,9 @@
 #include "meta/type.h"
 
 namespace GRAE {
-Entity::Entity() {}
+Entity::Entity() : cell(nullptr) {}
 
-Entity::Entity(EntitySchematic *schematic) {
+Entity::Entity(EntitySchematic *schematic, Cell *c) : cell(c) {
     for (auto pair : schematic->ref) {
         components[pair.first] = (Component *) pair.second;
     }
@@ -22,11 +22,6 @@ void Entity::update(double dt) {
     for (auto pair : components) {
         pair.second->update(dt, this);
     }
-    if (getComponent<AI>() != nullptr && getComponent<Transform>() != nullptr) {
-        double SPEED = dt;
-        getComponent<Transform>()->getPos() += getComponent<AI>()->getGoalDirection() * SPEED;
-        getComponent<Transform>()->setRot(MatUtil::getLookRotation(getComponent<AI>()->getGoalDirection()));
-    }
 }
 
 void Entity::render(mat4 m) {
@@ -37,4 +32,8 @@ void Entity::render(mat4 m) {
         pair.second->render(m);
     }
 }
+
+void Entity::setCell(Cell *c) { cell = c; }
+
+Cell *Entity::getCell() { return cell; }
 }

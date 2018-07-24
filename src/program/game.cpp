@@ -20,7 +20,9 @@ void Game::mainloop(double dt) {
 }
 
 Game::Game(GraphicsContext *gc, Window *wind, Resources *r, World *w) : shouldExit(false), graphics(gc), window(wind),
-                                                                        res(r), world(w) {}
+                                                                        res(r), world(w) {
+    world->game = this;
+}
 
 Game::~Game() {
 

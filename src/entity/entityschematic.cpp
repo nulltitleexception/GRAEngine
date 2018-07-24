@@ -22,7 +22,7 @@ EntitySchematic::EntitySchematic(std::string s, Resources *res, bool &success, s
     success = true;
 }
 
-Entity *EntitySchematic::newInstance() {
-    return new Entity(this);
+Entity *EntitySchematic::newInstance(Cell* c) {
+    return new Entity(this, c);
 }
 }

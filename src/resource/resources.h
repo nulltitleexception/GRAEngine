@@ -78,7 +78,6 @@ private:
 
     template<typename T>
     T *const &getResource(std::string id) {
-        log->verbose << "Resource<" << TYPES.get<T>()->getName() << "> requested: \"" << id << "\"";
         if (!handlers.count(std::type_index(typeid(T)))) {
             log->err << "Resource type not initialized!";
             log->verbose << TYPES.get<T>()->getName();

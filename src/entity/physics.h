@@ -2,6 +2,7 @@
 #define GRAE_ENGINE_PHYSICS_H
 
 #include "component.h"
+#include "ai.h"
 
 namespace GRAE {
 class Physics : public Component {
@@ -17,6 +18,13 @@ public:
 class GravityPhysics : public Physics {
 public:
     GravityPhysics();
+
+    void update(double dt, Entity *parent) override;
+};
+
+class MovementPhysics : public Physics {
+public:
+    MovementPhysics();
 
     void update(double dt, Entity *parent) override;
 };

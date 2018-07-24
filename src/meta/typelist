@@ -13,4 +13,5 @@
     OP(AI) \
     OP(SpinAI) \
     OP(Physics) \
-    OP(GravityPhysics)
+    OP(GravityPhysics) \
+    OP(MovementPhysics)

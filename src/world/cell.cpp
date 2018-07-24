@@ -1,13 +1,12 @@
 #include "cell.h"
-#include "cellschematic.h"
 
 namespace GRAE {
-Cell::Cell() {}
+Cell::Cell(World *w) : world(w) {}
 
 
-Cell::Cell(CellSchematic *schematic) {
+Cell::Cell(CellSchematic *schematic, World *w) : world(w) {
     for (EntitySchematic *ent : schematic->ent) {
-        entities.push_back(ent->newInstance());
+        entities.push_back(ent->newInstance(this));
     }
 }
 

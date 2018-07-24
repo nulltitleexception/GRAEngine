@@ -1,16 +1,10 @@
 #include "world.h"
 
 namespace GRAE {
-World::World() {
+World::World(Game *g) : game(g) {}
 
-}
-
-World::World(std::vector<Cell *> &c) {
+World::World(std::vector<Cell *> &c, Game *g) : game(g) {
     cells.insert(cells.end(), c.begin(), c.end());
-}
-
-World::World(std::string path, Resources *res, bool &success, std::string &reason) {
-
 }
 
 World::~World() {

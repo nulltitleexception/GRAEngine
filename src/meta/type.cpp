@@ -19,6 +19,15 @@ void TypeResolver::extend(std::string s, GRAE::Type *type, std::type_index index
 }
 
 Type *TypeResolver::get(std::string s) {
+    if (!types.count(s)) {
+        log->err << "Type \"" << s << "\" does not exist or is not registered.\n"
+                 << "Types must curently be registered at compile time.\n"
+                 << "Register a new type \"TypeName\" by placing the line:\n"
+                 << "\"ADDTYPE(TypeName)\"\n"
+                 << " anywhere before the Resource Handler is instantiated.\n"
+                 << "(Reccomended position is at the beginning of the main() function)";
+        return nullptr;
+    }
     return types.at(s).get();
 }
 

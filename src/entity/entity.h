@@ -10,6 +10,8 @@
 
 #include "resource/resources.h"
 #include "math/math.h"
+#include "world/cell.h"
+#include "world/world.h"
 
 #include <unordered_map>
 #include <vector>
@@ -17,14 +19,17 @@
 #include <typeindex>
 
 namespace GRAE {
+class Cell;
+
 class Entity : Component {
 private:
     std::unordered_map<std::type_index, Component *> components;
     std::vector<std::unique_ptr<Component>> owned;
+    Cell *cell;
 public:
     Entity();
 
-    explicit Entity(EntitySchematic *schematic);
+    Entity(EntitySchematic *schematic, Cell* c);
 
     template<typename T>
     T *getComponent() {
@@ -50,6 +55,10 @@ public:
     void update(double dt);
 
     void render(mat4 m = mat4());
+
+    void setCell(Cell *c);
+
+    Cell *getCell();
 };
 }
 

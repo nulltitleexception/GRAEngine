@@ -10,12 +10,15 @@
 namespace GRAE {
 class Entity;
 
+class Cell;
+
 class EntitySchematic : Component {
     friend class Entity;
+
     struct TypeGen {
-        Type* cast;
-        Type* type;
-        Gen* gen;
+        Type *cast;
+        Type *type;
+        Gen *gen;
     };
 private:
     std::unordered_map<std::type_index, Component *> ref;
@@ -25,7 +28,7 @@ public:
 
     EntitySchematic(std::string s, Resources *res, bool &success, std::string &reason);
 
-    Entity *newInstance();
+    Entity *newInstance(Cell *c);
 
     template<typename T>
     void addComponent(T *c) {

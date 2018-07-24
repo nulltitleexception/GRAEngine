@@ -9,6 +9,8 @@
 namespace GRAE {
 class Cell;
 
+class World;
+
 class CellSchematic {
     friend class Cell;
 
@@ -20,7 +22,7 @@ public:
 
     CellSchematic(std::string s, Resources *res, bool &success, std::string &reason);
 
-    Cell *newInstance();
+    Cell *newInstance(World *w);
 
     void addEntity(EntitySchematic *schematic);
 };
