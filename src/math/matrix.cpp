@@ -84,7 +84,7 @@ Matrix4x4D Matrix4x4D::getAdjoint() {
     mat4 mat;
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            mat.m[j][i] = det3x3(m, i + 1, j + 1);
+            mat.m[j][i] = (i % 2 == j % 2) ?: -det3x3(m, i + 1, j + 1);
         }
     }
     return mat;
