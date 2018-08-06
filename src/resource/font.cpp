@@ -117,7 +117,8 @@ Text *Font::getText(std::string t, int size) {
         v[(i * 24) + 23] = bottom;
         i++;
     }
-
-    return new Text(new Mesh2D(v, t.length() * 6), shader, texture);
+    Text* ret = new Text(new Mesh2D(v, t.length() * 6), shader, texture);
+    delete[] v;
+    return ret;
 }
 }

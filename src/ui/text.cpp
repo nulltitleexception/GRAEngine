@@ -7,7 +7,7 @@ Text::~Text() {
     delete mesh;
 }
 
-void Text::draw(mat4 m) {
+void Text::render(mat4 m) {
     shader->bind();
     texture->bind();
     mesh->render();

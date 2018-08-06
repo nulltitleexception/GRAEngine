@@ -1,13 +1,14 @@
 #ifndef GRAE_ENGINE_GAME_H
 #define GRAE_ENGINE_GAME_H
 
+#include "ui/menucontainer.h"
 #include "world/world.h"
 #include "graphics/window.h"
 #include "graphics/graphicscontext.h"
 #include "resource/resources.h"
 
 namespace GRAE {
-class Game {
+class Game : public MenuContainer{
 private:
     bool shouldExit;
     GraphicsContext *graphics;

@@ -2,7 +2,6 @@
 
 namespace GRAE {
 namespace PRIVATE {
-ResourceHandler::~ResourceHandler() {}
 DefaultResource::~DefaultResource() {}
 }
 }

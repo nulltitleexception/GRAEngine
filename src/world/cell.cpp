@@ -27,4 +27,27 @@ void Cell::render() {
         entities[i]->render();
     }
 }
+
+TerrainCell::TerrainCell(World *w) : Cell(w) {
+}
+
+
+TerrainCell::TerrainCell(CellSchematic *schematic, World *w) : Cell(schematic, w) {
+}
+
+TerrainCell::~TerrainCell() {
+    for (int i = 0; i < entities.size(); i++) {
+        delete entities[i];
+    }
+}
+
+void TerrainCell::update(double dt) {
+    for (int i = 0; i < entities.size(); i++) {
+        entities[i]->update(dt);
+    }
+}
+
+void TerrainCell::render() {
+    Cell::render();
+}
 }

@@ -1,5 +1,7 @@
 #include "type.h"
 
+#include "system/log.h"
+
 #define ADDTYPE(VAR) \
     TYPES.extend(#VAR, new TypeImpl<VAR>(#VAR), std::type_index(typeid(VAR)));
 
@@ -32,15 +34,27 @@ private:
         return nullptr;
     }
 
-    template<typename U, typename int_<decltype(U(std::declval<Gen*>()))>::type = 0>
-    void *constructImpl(Gen* gen, special_) {
+    template<typename U, typename int_<decltype(U(std::declval<Gen *>()))>::type = 0>
+    void *constructImpl(Gen *gen, special_) {
         return new U(gen);
     }
 
     template<typename U>
-    void *constructImpl(Gen* gen, general_) {
+    void *constructImpl(Gen *gen, general_) {
         log->err << "invalid constructImpl(Gen*) called, fallback to construct()";
         return construct();
+    }
+
+
+    template<typename U, typename int_<decltype(U(std::declval<Resources *>(), std::declval<Gen *>()))>::type = 0>
+    void *constructImpl(Resources *res, Gen *gen, special_) {
+        return new U(res, gen);
+    }
+
+    template<typename U>
+    void *constructImpl(Resources *res, Gen *gen, general_) {
+        log->err << "invalid constructImpl(Resources*, Gen*) called, fallback to construct(Gen*)";
+        return construct(gen);
     }
 
     template<typename U, typename int_<decltype(U("", std::declval<Resources *>(),
@@ -60,8 +74,16 @@ public:
         return constructImpl<T>(special_());
     }
 
-    void *construct(Gen* gen) override {
+    void *construct(Gen *gen) override {
         return constructImpl<T>(gen, special_());
+    }
+
+    void *construct(Resources *res, Gen *gen) override {
+        return constructImpl<T>(res, gen, special_());
+    }
+
+    void deconstruct(void *p) {
+        delete ((T *) p);
     }
 
     void *load(Resources *res, std::string name) override {

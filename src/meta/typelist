@@ -14,4 +14,8 @@
     OP(SpinAI) \
     OP(Physics) \
     OP(GravityPhysics) \
-    OP(MovementPhysics)
+    OP(MovementPhysics) \
+    OP(MenuContainer) \
+    OP(MenuItem) \
+    OP(Menu) \
+    OP(TextMenuItem)

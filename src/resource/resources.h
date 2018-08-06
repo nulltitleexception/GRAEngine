@@ -2,6 +2,7 @@
 #define GRAE_ENGINE_RESOURCES_H
 
 #include "system/log.h"
+#include "gen.h"
 #include "meta/type.h"
 
 #include <string>
@@ -12,33 +13,28 @@ namespace GRAE {
 class Resources;
 namespace PRIVATE {
 class ResourceHandler {
-public:
-    virtual ~ResourceHandler() = 0;
-};
-
-template<typename T>
-class Handler : public ResourceHandler {
 private:
-    std::unordered_map<std::string, T *> resources;
+    std::unordered_map<std::string, void *> resources;
+    Type *type;
     std::string directory;
 public:
-    explicit Handler(std::string dir) : directory(dir) {}
+    ResourceHandler(Type *t, std::string dir) : type(t), directory(dir) {}
 
-    ~Handler() override {
-        log->debug << "Freeing all <" << TYPES.get<T>()->getName() << ">";
+    ~ResourceHandler() {
+        log->debug << "Freeing all <" << type->getName() << ">";
         for (auto pair : resources) {
-            delete pair.second;
+            type->deconstruct(pair.second);
             log->verbose << pair.first << " unloaded";
         }
     }
 
-    virtual T *&operator[](std::string id) { return resources[id]; }
+    void *&operator[](std::string id) { return resources[id]; }
 
-    virtual bool resourceExists(std::string id) {
+    bool resourceExists(std::string id) {
         return (bool) resources.count(id);
     }
 
-    virtual std::string getDir() {
+    std::string getDir() {
         return directory;
     }
 };
@@ -77,13 +73,13 @@ private:
     }
 
     template<typename T>
-    T *const &getResource(std::string id) {
+    T *const getResource(std::string id) {
         if (!handlers.count(std::type_index(typeid(T)))) {
             log->err << "Resource type not initialized!";
             log->verbose << TYPES.get<T>()->getName();
             return getDefault<T>();
         }
-        if (!((PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))]))->resourceExists(id)) {
+        if (!(handlers[std::type_index(typeid(T))]->resourceExists(id))) {
             log->info << "Loading Resource<" << TYPES.get<T>()->getName() << ">: \"" << id << "\"";
             bool success = false;
             std::string reason = "reason unknown";
@@ -93,16 +89,25 @@ private:
                 delete resource;
                 return getDefault<T>();
             } else {
-                ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))])))[id] = resource;
+                (*(handlers[std::type_index(typeid(T))]))[id] = resource;
                 log->debug << "Successfully Loaded Resource<" << TYPES.get<T>()->getName() << ">: \"" << id << "\"";
             }
         }
-        return ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))])))[id];
+        return (T *) (handlers[std::type_index(typeid(T))]->operator[](id));
     }
 
 public:
     explicit Resources(std::string root) : rootDir(root) {
-        log->info << "Initialized Resources at \"" << root << "\"";
+        log->info << "Initialized Resources at \"" << rootDir << "\"";
+    }
+
+    explicit Resources(Gen *manifest) {
+        rootDir = manifest->getString("Resources");
+        log->info << "Initialized Resources at \"" << rootDir << "\"";
+        Gen *types = manifest->getSubValues("Resources");
+        for (std::string key : types->getKeys()) {
+            initResourceType(TYPES.get(key), types->getString(key));
+        }
     }
 
     ~Resources() {
@@ -119,18 +124,20 @@ public:
 
     template<typename T>
     void initResourceType(std::string dir) {
-        log->debug << "Initializing Resource Type <" << TYPES.get<T>()->getName() << ">";
-        handlers[std::type_index(typeid(T))] = new PRIVATE::Handler<T>(dir);
+        initResourceType(TYPES.get<T>(), dir);
+    }
+
+    void initResourceType(Type *type, std::string dir) {
+        log->debug << "Initializing Resource Type <" << type->getName() << ">";
+        handlers[type->getIndex()] = new PRIVATE::ResourceHandler(type, dir);
     }
 
     template<typename T>
-    T *const &get(std::string id = "") {
+    T *const get(std::string id = "") {
         if (id.size() > 0) {
             return getResource<T>((rootDir.length() > 0 ? rootDir + "/" : "") +
-                                  (((*(PRIVATE::Handler<T> *) (handlers[std::type_index(
-                                          typeid(T))]))).getDir().length() > 0
-                                   ? ((*(PRIVATE::Handler<T> *) (handlers[std::type_index(typeid(T))]))).getDir() + "/"
-                                   : "") + id);
+                                  (((*(handlers[std::type_index(typeid(T))]))).getDir().length() > 0 ?
+                                   ((*(handlers[std::type_index(typeid(T))]))).getDir() + "/" : "") + id);
         } else {
             return getDefault<T>();
         }
@@ -138,7 +145,7 @@ public:
 
 
     template<typename T>
-    T *const &getFromRoot(std::string id) {
+    T *const getFromRoot(std::string id) {
         if (id.size() > 0) {
             return getResource<T>(id);
         } else {

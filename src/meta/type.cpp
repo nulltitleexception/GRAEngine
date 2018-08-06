@@ -32,6 +32,15 @@ Type *TypeResolver::get(std::string s) {
 }
 
 Type *TypeResolver::get(std::type_index t) {
+    if (!indexedTypes.count(t)) {
+        log->err << "Type \"" << t.name() << "\" does not exist or is not registered.\n"
+                 << "Types must curently be registered at compile time.\n"
+                 << "Register a new type \"TypeName\" by placing the line:\n"
+                 << "\"ADDTYPE(TypeName)\"\n"
+                 << " anywhere before the Resource Handler is instantiated.\n"
+                 << "(Reccomended position is at the beginning of the main() function)";
+        return nullptr;
+    }
     return indexedTypes.at(t);
 }
 

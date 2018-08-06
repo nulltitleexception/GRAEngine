@@ -16,7 +16,7 @@ public:
 
     ~Text();
 
-    void draw(mat4 m = mat4());
+    void render(mat4 m = mat4());
 };
 }
 

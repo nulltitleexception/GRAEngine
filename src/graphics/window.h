@@ -10,9 +10,13 @@ namespace GRAE {
 class InputContext;
 
 struct WindowProperties {
+    WindowProperties();
+    WindowProperties(Gen* gen);
     std::string title;
     int width;
     int height;
+    int vsync;
+    bool decorated;
 };
 
 class Window {

@@ -1,10 +1,11 @@
 #ifndef GRAE_ENGINE_GEN_H
 #define GRAE_ENGINE_GEN_H
 
-#include "resources.h"
+#include "system/file.h"
 #include <string>
 #include <fstream>
 #include <unordered_map>
+#include <memory>
 
 /*
  * FORMAT:
@@ -24,6 +25,7 @@
 */
 namespace GRAE {
 class Gen;
+class Resources;
 namespace PRIVATE {
 class Value {
 public:
@@ -41,6 +43,8 @@ public:
 
     explicit Gen(std::string s);
 
+    explicit Gen(File f);
+
     Gen(std::string file, Resources *res, bool &success, std::string &reason);
 
     std::vector <std::string> getKeys();
@@ -50,6 +54,8 @@ public:
     int getInt(std::string id, int fallback = 0);
 
     double getDouble(std::string id, double fallback = 0);
+
+    bool getBool(std::string id, bool fallback = false);
 
     Gen* getSubValues(std::string id);
 

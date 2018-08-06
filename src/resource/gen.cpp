@@ -1,6 +1,7 @@
 #include "gen.h"
 
 #include "system/file.h"
+#include "system/log.h"
 
 namespace GRAE {
 Gen::Gen() {}
@@ -9,6 +10,14 @@ Gen::Gen(GRAE::Resources *res) {}
 
 Gen::Gen(std::string s) {
     consume(s);
+}
+
+Gen::Gen(File f) {
+    if (!f.getExists()) {
+        log->err << "file does not exist!";
+    }
+    std::string contents = f.getContents();
+    consume(contents);
 }
 
 Gen::Gen(std::string file, Resources *res, bool &success, std::string &reason) {
@@ -54,6 +63,19 @@ double Gen::getDouble(std::string id, double fallback) {
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
     return (values.count(key) && values.at(key).subvalues) ? values.at(key).subvalues->getDouble(remainder, fallback)
+                                                           : fallback;
+}
+
+bool Gen::getBool(std::string id, bool fallback) {
+    std::string::size_type loc = id.find('.', 0);
+    if (loc == std::string::npos) {
+        bool b;
+        std::istringstream(values.at(id).value) >> std::boolalpha >> b;
+        return values.count(id) ? b : fallback;
+    }
+    std::string key = id.substr(0, loc);
+    std::string remainder = id.substr(loc + 1);
+    return (values.count(key) && values.at(key).subvalues) ? values.at(key).subvalues->getBool(remainder, fallback)
                                                            : fallback;
 }
 
@@ -117,7 +139,6 @@ void Gen::consume(std::string &s) {
             if (key.size() || val.size()) {
                 values[key].value = val;
             }
-
         } else {
             if (key.size()) {
                 values[key].value = "";

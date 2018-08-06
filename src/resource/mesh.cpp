@@ -138,7 +138,7 @@ Mesh::Mesh(std::string path, Resources *res, bool &success, std::string &reason)
     File cache(path + ".msh");
     if (!cache.getExists()) {
         File file(path + ".obj");
-        if (!file.getExists()){
+        if (!file.getExists()) {
             success = false;
             reason = "File not found!";
             return;
@@ -338,5 +338,17 @@ void Mesh2D::render() {
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(0);
     glBindVertexArray(0);
+}
+
+void Mesh2D::renderWireframe() {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glBindVertexArray(VAO);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glDrawArrays(GL_TRIANGLES, 0, vertnum);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(0);
+    glBindVertexArray(0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 }

@@ -1,42 +1,20 @@
 #ifndef GRAE_ENGINE_MENU_H
 #define GRAE_ENGINE_MENU_H
 
+#include "menucontainer.h"
+#include "menuitem.h"
+#include "meta/type.h"
+
 namespace GRAE {
-class Menu {
-public:
-    enum class HorizontalAlignment {
-        Left,
-        Center,
-        Right,
-        Absolute,
-        Relative
-    };
-    enum class VerticalAlignment {
-        Top,
-        Center,
-        Bottom,
-        Absolute,
-        Relative
-    };
-    enum class SizeType {
-        None,
-        Fill,
-        Absolute,
-        Relative
-    };
-    union Num {
-        float rel;
-        int abs;
-    };
-private:
-    HorizontalAlignment alighH;
-    VerticalAlignment alignV;
-    SizeType sizeType;
-    Num pos;
-    Num size;
+class Menu : public MenuContainer, public MenuItem {
 public:
     Menu();
-    void render();
+
+    Menu(Resources* res);
+
+    Menu(std::string s, Resources *res, bool &success, std::string &reason);
+
+    virtual void render(int x, int y);
 };
 }
 

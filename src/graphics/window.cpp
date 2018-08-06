@@ -8,10 +8,23 @@
 #include <stdexcept>
 
 #include "input/input.h"
+#include "system/log.h"
 
 #include "window_impl.hpp"
 
+#include "version/version.h"
+
 namespace GRAE {
+WindowProperties::WindowProperties() {}
+
+WindowProperties::WindowProperties(GRAE::Gen *gen) {
+    gen->getString("title", "GRAE Engine " + getVersionString());
+    width = gen->getInt("resolution.x", 640);
+    height = gen->getInt("resolution.y", 480);
+    vsync = gen->getInt("vsync", 1);
+    decorated = gen->getBool("decorated", true);
+}
+
 Window::Window_Impl::Window_Impl(GLFWwindow *wind) : window(wind) {
 }
 
@@ -24,15 +37,15 @@ Window::Window() {}
 Window::Window(GraphicsContext *g, WindowProperties &windowData) : properties(windowData) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, g->getProperties().GLMajor);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, g->getProperties().GLMinor);
-    Impl = new Window_Impl(glfwCreateWindow(windowData.width, windowData.height,
-                                            &windowData.title[0], NULL, NULL));
+    Impl = new Window_Impl(glfwCreateWindow(properties.width, properties.height,
+                                            &properties.title[0], NULL, NULL));
     if (!Impl->window) {
         log->err << "Failed to create window";
         throw std::runtime_error("Window creation failed");
     }
     acquire();
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-    glfwSwapInterval(1);//0=vsync false | 1 = vsync true | 2 = half frame rate (purpose???)
+    glfwSwapInterval(properties.vsync);//0=vsync false | 1 = vsync true | 2 = half frame rate (purpose???)
 
     log->info << "OpenGL " << glGetString(GL_VERSION);
     glEnable(GL_DEPTH_TEST);
@@ -79,7 +92,7 @@ void Window::clear(bool color, bool depth) {
 }
 
 bool Window::closeRequested() {
-    return glfwWindowShouldClose(Impl->window);
+    return (bool) glfwWindowShouldClose(Impl->window);
 }
 
 void Window::swap() {

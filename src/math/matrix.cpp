@@ -1,6 +1,7 @@
 #include "matrix.h"
 
 #include <cmath>
+#include "system/log.h"
 
 const double PI = 3.14159265358979323846;
 
@@ -95,7 +96,7 @@ Matrix4x4D Matrix4x4D::getInverse() {
     double det = determinant();
     double zero = 0.000001;
     if (det < zero && det > -zero) {
-        log->err << "matrix is singular!";
+        GRAE::log->err << "matrix is singular!";
     }
     double invDet = 1.0;
     for (int i = 0; i < 4; i++) {

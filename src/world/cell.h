@@ -20,11 +20,26 @@ public:
 
     Cell(CellSchematic *schematic, World *w);
 
-    ~Cell();
+    virtual ~Cell();
 
-    void update(double dt);
+    virtual void update(double dt);
 
-    void render();
+    virtual void render();
+};
+
+class TerrainCell : public Cell {
+private:
+    float *height;
+public:
+    explicit TerrainCell(World *w);
+
+    TerrainCell(CellSchematic *schematic, World *w);
+
+    virtual ~TerrainCell();
+
+    virtual void update(double dt);
+
+    virtual void render();
 };
 }
 

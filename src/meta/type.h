@@ -20,6 +20,10 @@ public:
 
     virtual void *construct(Gen *gen)=0;
 
+    virtual void *construct(Resources* res, Gen *gen)=0;
+
+    virtual void deconstruct(void *p)=0;
+
     virtual void *load(Resources *res, std::string name)=0;
 
     virtual std::type_index getIndex()=0;

@@ -1,8 +1,9 @@
 #ifndef GRAE_ENGINE_SYSTEM_H
 #define GRAE_ENGINE_SYSTEM_H
 
-#include "variables.h"
+#include "file.h"
 #include "log.h"
+#include "variables.h"
 
 namespace GRAE {
 class System {
