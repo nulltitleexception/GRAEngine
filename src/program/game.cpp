@@ -6,15 +6,19 @@
 
 namespace GRAE {
 void Game::mainloop(double dt) {
+    //update
     update(this, dt);
     world->update(dt);
-
+    //clear buffer
     window->clear();
+    //draw scene
     sceneCamera.bind();
     render(this);
     world->render();
-
+    //draw ui
     uiCamera.bind();
+    renderChildren(0,0);
+    //swap and poll
     window->swap();
     graphics->poll();
 }

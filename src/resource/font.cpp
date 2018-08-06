@@ -62,7 +62,8 @@ Text *Font::getText(std::string t, int size) {
     }
     int ws = (int) (std::count(t.begin(), t.end(), ' ') + std::count(t.begin(), t.end(), '\t') +
                     std::count(t.begin(), t.end(), '\n'));
-    float *v = new float[(t.length() - ws) * 24];
+    int vertNum = (t.length() - ws) * 24;
+    float *v = new float[vertNum];
     int xi = 0;
     int yi = 0;
     int i = 0;
@@ -117,7 +118,7 @@ Text *Font::getText(std::string t, int size) {
         v[(i * 24) + 23] = bottom;
         i++;
     }
-    Text* ret = new Text(new Mesh2D(v, t.length() * 6), shader, texture);
+    Text *ret = new Text(new Mesh2D(v, vertNum, shader, texture);
     delete[] v;
     return ret;
 }
