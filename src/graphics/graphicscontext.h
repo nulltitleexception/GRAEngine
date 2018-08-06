@@ -27,6 +27,8 @@ public:
 
     void poll();
 
+    std::string getImplementation();
+
 private:
     bool initialized;
     GraphicsProperties properties;

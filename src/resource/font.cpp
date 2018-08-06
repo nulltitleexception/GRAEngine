@@ -62,8 +62,8 @@ Text *Font::getText(std::string t, int size) {
     }
     int ws = (int) (std::count(t.begin(), t.end(), ' ') + std::count(t.begin(), t.end(), '\t') +
                     std::count(t.begin(), t.end(), '\n'));
-    int vertNum = (t.length() - ws) * 24;
-    float *v = new float[vertNum];
+    int vertNum = (t.length() - ws) * 6;
+    float *v = new float[vertNum * 4];
     int xi = 0;
     int yi = 0;
     int i = 0;

@@ -38,4 +38,13 @@ GraphicsContext::~GraphicsContext() {
 void GraphicsContext::poll() {
     glfwPollEvents();
 }
+
+std::string GraphicsContext::getImplementation() {
+    std::stringstream ret;
+    ret << "GLFW - Compiled V" << GLFW_VERSION_MAJOR << "." << GLFW_VERSION_MINOR << "." << GLFW_VERSION_REVISION;
+    int major, minor, revision;
+    glfwGetVersion(&major, &minor, &revision);
+    ret << " - Running V" << major << "." << minor << "." << revision;
+    return ret.str();
+}
 }
