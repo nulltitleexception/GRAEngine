@@ -1,22 +1,37 @@
 #ifndef GRAE_ENGINE_TEXT_H
 #define GRAE_ENGINE_TEXT_H
 
-#include "resource/mesh.h"
-#include "resource/shader.h"
-#include "resource/texture.h"
+#include "menuitem.h"
+
+#include <string>
 
 namespace GRAE {
-class Text {
+class Resources;
+
+class Text2D;
+
+class Font;
+
+class Text : public MenuItem {
 private:
-    Mesh2D *mesh;
-    Shader *shader;
-    Texture *texture;
+    std::string string;
+    int size;
+    Font *font;
+    Text2D *text;
 public:
-    Text(Mesh2D *m, Shader *s, Texture *t);
+    Text(Resources* res, Gen* gen);
 
     ~Text();
 
-    void render(mat4 m = mat4());
+    virtual void setString(std::string s);
+
+    virtual void setSize(int s);
+
+    virtual void setFont(Font *f);
+
+    virtual void setText(Text2D *t);
+
+    virtual void render(int x, int y);
 };
 }
 

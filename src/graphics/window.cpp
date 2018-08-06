@@ -37,6 +37,7 @@ Window::Window() {}
 Window::Window(GraphicsContext *g, WindowProperties &windowData) : properties(windowData) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, g->getProperties().GLMajor);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, g->getProperties().GLMinor);
+    glfwWindowHint(GLFW_DECORATED, properties.decorated);
     Impl = new Window_Impl(glfwCreateWindow(properties.width, properties.height,
                                             &properties.title[0], NULL, NULL));
     if (!Impl->window) {

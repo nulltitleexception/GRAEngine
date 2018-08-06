@@ -7,6 +7,7 @@
 #include "mesh.h"
 #include "resources.h"
 #include "shader.h"
+#include "text2d.h"
 #include "texture.h"
 
 #endif //GRAE_ENGINE_RESOURCE_H

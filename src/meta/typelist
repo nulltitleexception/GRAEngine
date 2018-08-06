@@ -18,4 +18,4 @@
     OP(MenuContainer) \
     OP(MenuItem) \
     OP(Menu) \
-    OP(TextMenuItem)
+    OP(Text)

@@ -3,7 +3,8 @@
 
 #include "resources.h"
 #include "texture.h"
-#include "ui/ui.h"
+#include "shader.h"
+#include "text2d.h"
 
 #include <string>
 
@@ -41,7 +42,7 @@ public:
 
     Font(std::string path, Resources *res, bool &success, std::string &reason);
 
-    Text *getText(std::string t, int size = 12);
+    Text2D *getText(std::string t, int size = 12);
 };
 }
 

@@ -56,7 +56,7 @@ Font::Font(std::string path, Resources *res, bool &success, std::string &reason)
     data = res->get<FontData>(gen.getString("data"));
 }
 
-Text *Font::getText(std::string t, int size) {
+Text2D *Font::getText(std::string t, int size) {
     if (size > data->getMaxSize()) {
         log->err << "Font does not support size " << size << "!";
     }
@@ -118,7 +118,7 @@ Text *Font::getText(std::string t, int size) {
         v[(i * 24) + 23] = bottom;
         i++;
     }
-    Text *ret = new Text(new Mesh2D(v, vertNum), shader, texture);
+    Text2D *ret = new Text2D(new Mesh2D(v, vertNum), shader, texture);
     delete[] v;
     return ret;
 }
