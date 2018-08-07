@@ -17,7 +17,7 @@ void Game::mainloop(double dt) {
     world->render();
     //draw ui
     uiCamera.bind();
-    renderChildren(0,0);
+    renderChildren(true);
     //swap and poll
     window->swap();
     graphics->poll();
@@ -85,5 +85,13 @@ void Game::run() {
 
 void Game::stop() {
     shouldExit = true;
+}
+
+double Game::getSizeX() {
+    return window->getProperties().width;
+}
+
+double Game::getSizeY() {
+    return window->getProperties().height;
 }
 }

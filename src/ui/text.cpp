@@ -4,8 +4,7 @@
 #include "resource/font.h"
 
 namespace GRAE {
-Text::Text(Resources *res, Gen *gen) : MenuItem(gen), string(""), size(0), font(nullptr),
-                                                       text(nullptr) {
+Text::Text(Resources *res, Gen *gen) : MenuItem(res, gen) {
     string = gen->getString("string", "");
     size = gen->getInt("size", 12);
     font = res->get<Font>(gen->getString("font", ""));
@@ -40,9 +39,18 @@ void Text::setText(Text2D *t) {
     text = t;
 }
 
-void Text::render(int x, int y) {
+void Text::render(bool drawBorders) {
+    MenuItem::render(drawBorders);
     if (text != nullptr) {
-        text->render();
+        text->render(MatUtil::translation(getPosX(), getPosY(), 0));
     }
+}
+
+double Text::getSizeX() {
+    return text->getWidth();
+}
+
+double Text::getSizeY() {
+    return text->getHeight();
 }
 }

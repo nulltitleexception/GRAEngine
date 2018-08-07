@@ -1,31 +1,30 @@
 #ifndef GRAE_ENGINE_MENUCONTAINER_H
 #define GRAE_ENGINE_MENUCONTAINER_H
 
-#include "menuitem.h"
 #include <vector>
 
 namespace GRAE {
+class MenuItem;
+
 class MenuContainer {
-private:
+protected:
     std::vector<MenuItem *> children;
 public:
     virtual ~MenuContainer();
 
-    virtual void addSubmenu(MenuItem *item) {
-        children.push_back(item);
-    }
+    virtual void addSubmenu(MenuItem *item);
 
-    virtual void renderChildren(int x, int y) {
-        for (MenuItem *child : children) {
-            child->render(x, y);
-        }
-    }
+    virtual void renderChildren(bool drawBorders = false);
 
-    virtual bool handleClick(int x, int y) {
-        for (MenuItem *child : children) {
-            //pass click
-        }
-    };
+    virtual bool handleClick(int x, int y);
+
+    virtual double getPosX();
+
+    virtual double getPosY();
+
+    virtual double getSizeX();
+
+    virtual double getSizeY();
 };
 }
 

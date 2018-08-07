@@ -31,7 +31,11 @@ public:
 
     virtual void setText(Text2D *t);
 
-    virtual void render(int x, int y);
+    virtual double getSizeX();
+
+    virtual double getSizeY();
+
+    virtual void render(bool drawBorders = false);
 };
 }
 

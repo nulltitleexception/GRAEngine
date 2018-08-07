@@ -1,12 +1,14 @@
 #ifndef GRAE_ENGINE_MENUITEM_H
 #define GRAE_ENGINE_MENUITEM_H
 
-#include <resource/mesh.h>
+#include "resource/shader.h"
+#include "resource/mesh.h"
+#include "resource/gen.h"
 
 namespace GRAE {
 class Resources;
 
-class Gen;
+class MenuContainer;
 
 class MenuItem {
 public:
@@ -14,15 +16,17 @@ public:
         Left,
         Center,
         Right,
-        Absolute,
-        Relative
+        Absolute, //number of pixels relative to origin of parent
+        Relative, //ratio of parent's size
+        Override //number of pixels relative to top left of window
     };
     enum class VerticalAlignment {
         Top,
         Center,
         Bottom,
-        Absolute,
-        Relative
+        Absolute, //number of pixels relative to origin of parent
+        Relative, //ratio of parent's size
+        Override //number of pixels relative to top left of window
     };
     enum class SizeType {
         None,
@@ -30,30 +34,36 @@ public:
         Absolute,
         Relative
     };
-    union Num {
-        float rel;
-        int abs;
-    };
-private:
-    HorizontalAlignment alighH;
+protected:
+    HorizontalAlignment alignH;
     VerticalAlignment alignV;
-    SizeType sizeType;
-    Num posX;
-    Num posY;
-    Num size;
-    Mesh2D* borders;
+    SizeType sizeTypeX, sizeTypeY;
+    double posX, posY;
+    double sizeX, sizeY;
+    MenuContainer *parent;
+private:
+    Mesh2D *borders;
+    Shader *colorShader;
 public:
-    MenuItem();
-
-    MenuItem(Gen * gen);
+    MenuItem(Resources *res, Gen *gen);
 
     virtual ~MenuItem();
 
-    void init(Gen* gen);
+    void init(Gen *gen);
 
-    virtual void render(int x, int y);
+    void setParent(MenuContainer *p);
 
-    virtual void renderBorder(int x, int y);
+    virtual double getPosX();
+
+    virtual double getPosY();
+
+    virtual double getSizeX();
+
+    virtual double getSizeY();
+
+    virtual void render(bool drawBorder = false);
+
+    virtual void renderBorder();
 };
 }
 

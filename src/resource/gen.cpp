@@ -33,6 +33,16 @@ std::vector<std::string> Gen::getKeys() {
     return keys;
 }
 
+bool Gen::getPresent(std::string id) {
+    std::string::size_type loc = id.find('.', 0);
+    if (loc == std::string::npos) {
+        return values.count(id) > 0;
+    }
+    std::string key = id.substr(0, loc);
+    std::string remainder = id.substr(loc + 1);
+    return (values.count(key) && values.at(key).subvalues->getPresent(remainder));
+}
+
 std::string Gen::getString(std::string id, std::string fallback) {
     std::string::size_type loc = id.find('.', 0);
     if (loc == std::string::npos) {
@@ -47,7 +57,11 @@ std::string Gen::getString(std::string id, std::string fallback) {
 int Gen::getInt(std::string id, int fallback) {
     std::string::size_type loc = id.find('.', 0);
     if (loc == std::string::npos) {
-        return values.count(id) ? std::stoi(values.at(id).value) : fallback;
+        try {
+            return values.count(id) ? std::stoi(values.at(id).value) : fallback;
+        } catch (...) {
+            return fallback;
+        }
     }
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
@@ -58,7 +72,11 @@ int Gen::getInt(std::string id, int fallback) {
 double Gen::getDouble(std::string id, double fallback) {
     std::string::size_type loc = id.find('.', 0);
     if (loc == std::string::npos) {
-        return values.count(id) ? std::stod(values.at(id).value) : fallback;
+        try {
+            return values.count(id) ? std::stod(values.at(id).value) : fallback;
+        } catch (...) {
+            return fallback;
+        }
     }
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
@@ -119,7 +137,7 @@ void Gen::consume(std::string &s) {
             return;
         }
         int start = i;
-        while (i < s.size() && s.at(i) != ':' && s.at(i) != '{' && s.at(i) != '}') {
+        while (i < s.size() && s.at(i) != ':' && s.at(i) != '{' && s.at(i) != '}' && s.at(i) != '\n') {
             i++;
         }
         std::string key = s.substr(start, i - start);
@@ -129,8 +147,15 @@ void Gen::consume(std::string &s) {
                 values[key].value = "";
             }
             return;
+        } else if (s.at(i) == '\n') {
+            if (key.size()) {
+                values[key].value = "";
+            }
         } else if (s.at(i) == ':') {
             i++;
+            while (i < s.size() && (s.at(i) == ' ' || s.at(i) == '\t')) {
+                i++;
+            }
             start = i;
             while (i < s.size() && s.at(i) != '\n' && s.at(i) != '{' && s.at(i) != '}') {
                 i++;

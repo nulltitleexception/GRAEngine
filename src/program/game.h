@@ -8,7 +8,7 @@
 #include "resource/resources.h"
 
 namespace GRAE {
-class Game : public MenuContainer{
+class Game : public MenuContainer {
 private:
     bool shouldExit;
     GraphicsContext *graphics;
@@ -47,6 +47,10 @@ public:
     void run();
 
     void stop();
+
+    virtual double getSizeX();
+
+    virtual double getSizeY();
 };
 }
 

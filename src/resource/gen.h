@@ -49,6 +49,8 @@ public:
 
     std::vector <std::string> getKeys();
 
+    bool getPresent(std::string id);
+
     std::string getString(std::string id, std::string fallback = "");
 
     int getInt(std::string id, int fallback = 0);

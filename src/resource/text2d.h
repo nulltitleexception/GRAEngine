@@ -11,12 +11,17 @@ private:
     Mesh2D *mesh;
     Shader *shader;
     Texture *texture;
+    double width, height;
 public:
-    Text2D(Mesh2D *m, Shader *s, Texture *t);
+    Text2D(Mesh2D *m, Shader *s, Texture *t, double w, double h);
 
     ~Text2D();
 
     void render(mat4 m = mat4());
+
+    double getWidth();
+
+    double getHeight();
 };
 }
 

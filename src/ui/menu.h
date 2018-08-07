@@ -8,13 +8,25 @@
 namespace GRAE {
 class Menu : public MenuContainer, public MenuItem {
 public:
-    Menu();
+    Menu(Resources *res);
 
-    Menu(Resources* res);
+    Menu(Resources *res, Gen *gen);
 
     Menu(std::string s, Resources *res, bool &success, std::string &reason);
 
-    virtual void render(int x, int y);
+    virtual ~Menu();
+
+    virtual void init(Resources *res, Gen *gen);
+
+    virtual void render(bool drawBorders = false);
+
+    virtual double getPosX();
+
+    virtual double getPosY();
+
+    virtual double getSizeX();
+
+    virtual double getSizeY();
 };
 }
 
