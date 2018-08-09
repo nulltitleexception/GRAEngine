@@ -3,7 +3,7 @@
 #include <cmath>
 #include "system/log.h"
 
-const double PI = 3.14159265358979323846;
+#include "mathutil.h"
 
 namespace GRAE {
 Matrix4x4D::Matrix4x4D(double diag) {

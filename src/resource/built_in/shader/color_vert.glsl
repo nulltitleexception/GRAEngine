@@ -17,7 +17,7 @@ out mat4 pass_view;
 
 void main(){
     pass_pos = (entity * vec4(pos, 1.0)).xyz;
-    gl_Position = projection * view * entity * vec4(pos, 1.0);
+    gl_Position = projection * view * entity * model * vec4(pos, 1.0);
     pass_normal = (entity * vec4(normal, 0)).xyz;
     pass_UV = UV;
     pass_view = view;

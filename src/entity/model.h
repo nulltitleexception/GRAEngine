@@ -12,6 +12,7 @@ private:
     Resources *resources;
     Material *material;
     Mesh *mesh;
+    mat4 mat;
 public:
     explicit Model(Resources *res);
 
