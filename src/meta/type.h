@@ -20,7 +20,7 @@ public:
 
     virtual void *construct(Gen *gen)=0;
 
-    virtual void *construct(Resources* res, Gen *gen)=0;
+    virtual void *construct(Resources *res, Gen *gen)=0;
 
     virtual void deconstruct(void *p)=0;
 
@@ -38,7 +38,7 @@ private:
 public:
     TypeResolver();
 
-    void extend(std::string s, Type* type, std::type_index index);
+    void extend(std::string s, Type *type, std::type_index index);
 
     Type *get(std::string s);
 

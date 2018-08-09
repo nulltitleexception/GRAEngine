@@ -2,6 +2,8 @@
 
 #include "system/log.h"
 
+#include "meta/cast.h"
+
 namespace GRAE {
 Menu::Menu(Resources *res) : MenuItem(res, nullptr) {}
 
@@ -11,6 +13,7 @@ Menu::Menu(Resources *res, Gen *gen) : MenuItem(res, gen) {
 
 Menu::Menu(std::string s, Resources *res, bool &success, std::string &reason) : MenuItem(res, nullptr) {
     Gen gen(s + ".mnu", res, success, reason);
+    MenuItem::init(&gen);
     init(res, &gen);
 }
 
@@ -21,11 +24,11 @@ Menu::~Menu() {
 }
 
 void Menu::init(Resources *res, Gen *gen) {
-    MenuItem::init(gen);
     for (std::string key : gen->getKeys()) {
         Gen *subvalues = gen->getSubValues(key);
         if (gen->getString(key).size() && subvalues != nullptr) {
-            addSubmenu((MenuItem *) TYPES.get(gen->getString(key))->construct(res, subvalues));
+            Type *type = TYPES.get(gen->getString(key));
+            addSubmenu(CAST.cast<MenuItem>(type->getIndex(), type->construct(res, subvalues)));
         }
     }
 }

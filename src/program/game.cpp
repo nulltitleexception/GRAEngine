@@ -15,6 +15,8 @@ void Game::mainloop(double dt) {
     sceneCamera.bind();
     render(this);
     world->render();
+    //clear depth buffer, UI overrides scene
+    window->clear(false, true);
     //draw ui
     uiCamera.bind();
     renderChildren(true);

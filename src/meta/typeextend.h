@@ -1,3 +1,6 @@
+#ifndef GRAE_ENGINE_TYPEEXTEND_H
+#define GRAE_ENGINE_TYPEEXTEND_H
+
 #include "type.h"
 
 #include "system/log.h"
@@ -99,3 +102,5 @@ public:
     }
 };
 }
+
+#endif //GRAE_ENGINE_TYPEEXTEND_H

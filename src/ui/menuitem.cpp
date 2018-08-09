@@ -7,9 +7,6 @@ MenuItem::MenuItem(Resources *res, Gen *gen) : parent(nullptr), borders(nullptr)
     colorShader = res->getFromRoot<Shader>("built_in/shader/color");
     if (gen) {
         init(gen);
-    } else {
-        Gen g;
-        init(&g);
     }
 }
 
@@ -150,7 +147,7 @@ void MenuItem::render(bool drawBorders) {
 
 void MenuItem::renderBorder() {
     if (!borders) {
-        borders = Mesh2D::createBox(posX, posY, posX + sizeX, posY + sizeY);
+        borders = Mesh2D::createBox(getPosX(), getPosY(), getPosX() + getSizeX(), getPosY() + getSizeY());
     }
     colorShader->bind();
     colorShader->setUniformVec4("color", vec4(1,1,1,1));
