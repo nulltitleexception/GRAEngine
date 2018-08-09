@@ -53,4 +53,12 @@ double Text::getSizeX() {
 double Text::getSizeY() {
     return text->getHeight();
 }
+
+double Text::getOrphanSizeX() {
+    return text->getWidth();
+}
+
+double Text::getOrphanSizeY() {
+    return text->getHeight();
+}
 }

@@ -139,6 +139,66 @@ double MenuItem::getSizeY() {
     }
 }
 
+double MenuItem::getOrphanPosX() {
+    switch (alignH) {
+        case HorizontalAlignment::Left:
+            return 0;
+        case HorizontalAlignment::Center:
+            return getOrphanSizeX() / -2.0;
+        case HorizontalAlignment::Right:
+            return -getOrphanSizeX();
+        case HorizontalAlignment::Absolute:
+            return posX;
+        case HorizontalAlignment::Relative:
+            return 0;
+        case HorizontalAlignment::Override:
+            return posX;
+    }
+}
+
+double MenuItem::getOrphanPosY() {
+    switch (alignV) {
+        case VerticalAlignment::Top:
+            return 0;
+        case VerticalAlignment::Center:
+            return getOrphanSizeY() / -2.0;
+        case VerticalAlignment::Bottom:
+            return -getOrphanSizeY();
+        case VerticalAlignment::Absolute:
+            return posY;
+        case VerticalAlignment::Relative:
+            return 0;
+        case VerticalAlignment::Override:
+            return posY;
+    }
+}
+
+double MenuItem::getOrphanSizeX() {
+    switch (sizeTypeX) {
+        case SizeType::Fill:
+            return 0;
+        case SizeType::Absolute:
+            return sizeX;
+        case SizeType::Relative:
+            return 0;
+        case SizeType::None:
+            return 0;
+    }
+}
+
+double MenuItem::getOrphanSizeY() {
+    switch (sizeTypeY) {
+        case SizeType::Fill:
+            return 0;
+        case SizeType::Absolute:
+            return sizeY;
+        case SizeType::Relative:
+            return 0;
+        case SizeType::None:
+            return 0;
+    }
+}
+
 void MenuItem::render(bool drawBorders) {
     if (drawBorders) {
         renderBorder();
@@ -147,10 +207,10 @@ void MenuItem::render(bool drawBorders) {
 
 void MenuItem::renderBorder() {
     if (!borders) {
-        borders = Mesh2D::createBox(getPosX(), getPosY(), getPosX() + getSizeX(), getPosY() + getSizeY());
+        borders = Mesh2D::createBorders(getPosX(), getPosY(), getPosX() + getSizeX(), getPosY() + getSizeY());
     }
     colorShader->bind();
-    colorShader->setUniformVec4("color", vec4(1,1,1,1));
+    colorShader->setUniformVec4("color", vec4(1, 1, 1, 1));
     Shader::bindModelMatrix(mat4(1));
     Shader::bindEntityMatrix(mat4(1));
     borders->renderWireframe();

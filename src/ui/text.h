@@ -21,7 +21,7 @@ private:
 public:
     Text(Resources* res, Gen* gen);
 
-    ~Text();
+    virtual ~Text();
 
     virtual void setString(std::string s);
 
@@ -34,6 +34,10 @@ public:
     virtual double getSizeX();
 
     virtual double getSizeY();
+
+    virtual double getOrphanSizeX();
+
+    virtual double getOrphanSizeY();
 
     virtual void render(bool drawBorders = false);
 };

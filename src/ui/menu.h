@@ -27,6 +27,10 @@ public:
     virtual double getSizeX();
 
     virtual double getSizeY();
+
+    virtual double getOrphanSizeX();
+
+    virtual double getOrphanSizeY();
 };
 }
 

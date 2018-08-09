@@ -73,6 +73,11 @@ private:
     }
 
     template<typename T>
+    T *getInstanceDefault() {
+        return new T(this);
+    }
+
+    template<typename T>
     T *const getResource(std::string id) {
         if (!handlers.count(std::type_index(typeid(T)))) {
             log->err << "Resource type not initialized!";
@@ -94,6 +99,21 @@ private:
             }
         }
         return (T *) (handlers[std::type_index(typeid(T))]->operator[](id));
+    }
+
+    template<typename T>
+    T *getInstanceResource(std::string id) {
+        log->info << "Loading Instance Resource<" << TYPES.get<T>()->getName() << ">: \"" << id << "\"";
+        bool success = false;
+        std::string reason = "reason unknown";
+        T *resource = new T(id, this, success, reason);
+        if (!success) {
+            log->err << "Failed to load <" << TYPES.get<T>()->getName() << ">: " << id << " - " << reason;
+            delete resource;
+            return getInstanceDefault<T>();
+        } else {
+            return resource;
+        }
     }
 
 public:
@@ -150,6 +170,27 @@ public:
             return getResource<T>(id);
         } else {
             return getDefault<T>();
+        }
+    }
+
+    template<typename T>
+    T *const getInstance(std::string id = "") {
+        if (id.size() > 0) {
+            return getInstanceResource<T>((rootDir.length() > 0 ? rootDir + "/" : "") +
+                                  (((*(handlers[std::type_index(typeid(T))]))).getDir().length() > 0 ?
+                                   ((*(handlers[std::type_index(typeid(T))]))).getDir() + "/" : "") + id);
+        } else {
+            return getDefault<T>();
+        }
+    }
+
+
+    template<typename T>
+    T *const getInstanceFromRoot(std::string id) {
+        if (id.size() > 0) {
+            return getInstanceResource<T>(id);
+        } else {
+            return getInstanceDefault<T>();
         }
     }
 };

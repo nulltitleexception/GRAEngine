@@ -19,7 +19,7 @@ void Game::mainloop(double dt) {
     window->clear(false, true);
     //draw ui
     uiCamera.bind();
-    renderChildren(true);
+    renderChildren();
     //swap and poll
     window->swap();
     graphics->poll();

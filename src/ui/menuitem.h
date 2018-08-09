@@ -61,6 +61,14 @@ public:
 
     virtual double getSizeY();
 
+    virtual double getOrphanPosX();
+
+    virtual double getOrphanPosY();
+
+    virtual double getOrphanSizeX();
+
+    virtual double getOrphanSizeY();
+
     virtual void render(bool drawBorder = false);
 
     virtual void renderBorder();

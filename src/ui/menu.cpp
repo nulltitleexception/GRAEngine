@@ -27,8 +27,12 @@ void Menu::init(Resources *res, Gen *gen) {
     for (std::string key : gen->getKeys()) {
         Gen *subvalues = gen->getSubValues(key);
         if (gen->getString(key).size() && subvalues != nullptr) {
-            Type *type = TYPES.get(gen->getString(key));
-            addSubmenu(CAST.cast<MenuItem>(type->getIndex(), type->construct(res, subvalues)));
+            if (gen->getString(key) == "load") {
+                addSubmenu(res->getInstance<Menu>(subvalues->getKeys()[0]));
+            } else {
+                Type *type = TYPES.get(gen->getString(key));
+                addSubmenu(CAST.cast<MenuItem>(type->getIndex(), type->construct(res, subvalues)));
+            }
         }
     }
 }
@@ -47,10 +51,82 @@ double Menu::getPosY() {
 }
 
 double Menu::getSizeX() {
-    return MenuItem::getSizeX();
+    if (parent == nullptr && sizeTypeX != SizeType::None) {
+        return sizeX;
+    }
+    switch (sizeTypeX) {
+        case SizeType::Fill:
+            return parent->getSizeX();
+        case SizeType::Absolute:
+            return sizeX;
+        case SizeType::Relative:
+            return parent->getSizeX() * sizeX;
+        case SizeType::None: {
+            double ret = 0;
+            for (MenuItem *child : children) {
+                double s = child->getOrphanSizeX();
+                ret = ret > s ? ret : s;
+            }
+            return ret;
+        }
+    }
 }
 
 double Menu::getSizeY() {
-    return MenuItem::getSizeY();
+    if (parent == nullptr && sizeTypeY != SizeType::None) {
+        return sizeY;
+    }
+    switch (sizeTypeY) {
+        case SizeType::Fill:
+            return parent->getSizeY();
+        case SizeType::Absolute:
+            return sizeY;
+        case SizeType::Relative:
+            return parent->getSizeY() * sizeY;
+        case SizeType::None: {
+            double ret = 0;
+            for (MenuItem *child : children) {
+                double s = child->getOrphanSizeY();
+                ret = ret > s ? ret : s;
+            }
+            return ret;
+        }
+    }
+}
+
+double Menu::getOrphanSizeX() {
+    switch (sizeTypeX) {
+        case SizeType::Absolute:
+            return sizeX;
+        case SizeType::Relative:
+            return 0;
+        case SizeType::Fill:
+        case SizeType::None: {
+            double ret = 0;
+            for (MenuItem *child : children) {
+                double s = child->getOrphanSizeX();
+                ret = ret > s ? ret : s;
+            }
+            return ret;
+        }
+    }
+}
+
+double Menu::getOrphanSizeY() {
+    switch (sizeTypeY) {
+        case SizeType::Absolute:
+            return sizeY;
+        case SizeType::Relative:
+            return 0;
+        case SizeType::Fill:
+        case SizeType::None: {
+            double ret = 0;
+            for (MenuItem *child : children) {
+                double s = child->getOrphanSizeY();
+                ret = ret > s ? ret : s;
+            }
+            return ret;
+        }
+    }
 }
 }

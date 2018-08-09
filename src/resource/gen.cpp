@@ -3,6 +3,21 @@
 #include "system/file.h"
 #include "system/log.h"
 
+void strReplace(std::string &s, std::string before, std::string after) {
+    int pos;
+    while ((pos = s.find(before)) != std::string::npos) {
+        s.replace(pos, before.length(), after);
+    }
+}
+
+void strEscape(std::string &s) {
+    strReplace(s, "\\\\", "|||BACKSLASH|||");
+    strReplace(s, "\\n", "\n");
+    strReplace(s, "\\s", " ");
+    strReplace(s, "\\t", "\t");
+    strReplace(s, "|||BACKSLASH|||", "\\");
+}
+
 namespace GRAE {
 Gen::Gen() {}
 
@@ -162,6 +177,7 @@ void Gen::consume(std::string &s) {
             }
             std::string val = s.substr(start, i - start);
             if (key.size() || val.size()) {
+                strEscape(val);
                 values[key].value = val;
             }
         } else {
