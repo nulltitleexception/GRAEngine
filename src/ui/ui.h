@@ -5,5 +5,6 @@
 #include "menuitem.h"
 #include "menu.h"
 #include "text.h"
+#include "vartext.h"
 
 #endif //GRAE_ENGINE_UI_H

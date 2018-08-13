@@ -13,7 +13,7 @@ class Text2D;
 class Font;
 
 class Text : public MenuItem {
-private:
+protected:
     std::string string;
     int size;
     Font *font;

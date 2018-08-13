@@ -10,18 +10,28 @@
 /*
  * FORMAT:
  *           key:value
- *           or
+ * or
  *           key:value{
  *               subkey0:value
  *               subkey1:value
  *               ...
  *           }
- *           or
+ * or
  *           key{
  *               subkey0:value
  *               subkey1:value
  *               ...
  *           }
+ * or even
+ *           key
+ * ^ this alows for tag-like syntax, where a key is simply checked for presence, e.g.
+ *           Window{
+ *              resizable
+ *              nodecoration
+ *              fullscreen
+ *           }
+ * or somesuch
+ *
 */
 namespace GRAE {
 class Gen;
@@ -60,6 +70,14 @@ public:
     bool getBool(std::string id, bool fallback = false);
 
     Gen* getSubValues(std::string id);
+
+    bool isInt(std::string id);
+
+    bool isDouble(std::string id);
+
+    bool isBool(std::string id);
+
+    bool hasSubValues(std::string id);
 
     int size();
 

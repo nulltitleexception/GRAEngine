@@ -6,6 +6,8 @@
 namespace GRAE {
 std::string getVersionString();
 
+void setVersionEnvironmentValues();
+
 std::string getRelease();
 
 int getMajor();

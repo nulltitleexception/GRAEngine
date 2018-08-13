@@ -1,4 +1,4 @@
-820;//BUILD NUMBER
+856;//BUILD NUMBER
 static const std::string REL = "Alpha";//RELEASE TYPE
 static const int MAJ = 0;//MAJOR VERSION
 static const int MIN = 1;//MINOR VERSION

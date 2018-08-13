@@ -78,6 +78,7 @@ void Game::run() {
             fpsTime = frameTime;
             fps = fpsCount;
             fpsCount = 0;
+            Environment::get()->set("FPS", fps);
         }
         double temptime = System::getTime();
         dt = temptime - frameTime;

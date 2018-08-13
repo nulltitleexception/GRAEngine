@@ -18,4 +18,5 @@
     OP(MenuContainer) \
     OP(MenuItem) \
     OP(Menu) \
-    OP(Text)
+    OP(Text) \
+    OP(VarText)

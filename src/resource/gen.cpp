@@ -2,6 +2,7 @@
 
 #include "system/file.h"
 #include "system/log.h"
+#include <algorithm>
 
 void strReplace(std::string &s, std::string before, std::string after) {
     int pos;
@@ -121,6 +122,59 @@ Gen *Gen::getSubValues(std::string id) {
     std::string remainder = id.substr(loc + 1);
     return (values.count(key) && values.at(key).subvalues) ? values.at(key).subvalues->getSubValues(remainder)
                                                            : nullptr;
+}
+
+bool Gen::isInt(std::string id) {
+    std::string::size_type loc = id.find('.', 0);
+    if (loc == std::string::npos) {
+        try {
+            int i = std::stoi(values.at(id).value);
+            return true;
+        } catch (...) {
+            return false;
+        }
+    }
+    std::string key = id.substr(0, loc);
+    std::string remainder = id.substr(loc + 1);
+    return (values.count(key) && values.at(key).subvalues != nullptr && values.at(key).subvalues->isInt(remainder));
+}
+
+bool Gen::isDouble(std::string id) {
+    std::string::size_type loc = id.find('.', 0);
+    if (loc == std::string::npos) {
+        try {
+            double d = std::stod(values.at(id).value);
+            return true;
+        } catch (...) {
+            return false;
+        }
+    }
+    std::string key = id.substr(0, loc);
+    std::string remainder = id.substr(loc + 1);
+    return (values.count(key) && values.at(key).subvalues != nullptr && values.at(key).subvalues->isDouble(remainder));
+}
+
+bool Gen::isBool(std::string id) {
+    std::string::size_type loc = id.find('.', 0);
+    if (loc == std::string::npos) {
+        std::string val = values.at(id).value;
+        std::transform(val.begin(), val.end(), val.begin(), ::tolower);
+        return val == "true" || val == "false";
+    }
+    std::string key = id.substr(0, loc);
+    std::string remainder = id.substr(loc + 1);
+    return (values.count(key) && values.at(key).subvalues != nullptr && values.at(key).subvalues->isBool(remainder));
+}
+
+bool Gen::hasSubValues(std::string id) {
+    std::string::size_type loc = id.find('.', 0);
+    if (loc == std::string::npos) {
+        return (values.count(id) && values.at(id).subvalues.get() != nullptr);
+    }
+    std::string key = id.substr(0, loc);
+    std::string remainder = id.substr(loc + 1);
+    return (values.count(key) && values.at(key).subvalues != nullptr &&
+            values.at(key).subvalues->hasSubValues(remainder));
 }
 
 int Gen::size() {
