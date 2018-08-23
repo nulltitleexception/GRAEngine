@@ -13,13 +13,13 @@ Model::Model(GRAE::Resources *res) : resources(res), mat(1) {
 
 Model::Model(std::string s, Resources *res, bool &success, std::string &reason) : resources(res), mat(1) {
     Gen *gen = res->getFromRoot<Gen>(s + ".mdl");
-    material = res->get<Material>(gen->getString("material"));
-    mesh = res->get<Mesh>(gen->getString("mesh"));
-    mat *= MatUtil::translation(gen->getDouble("pos.x"), gen->getDouble("pos.y"), gen->getDouble("pos.z")) *
-           MatUtil::rotationX(gen->getDouble("rot.x") * (gen->getPresent("rot.x.degrees") ? (PI / 180.0) : 1.0)) *
-           MatUtil::rotationZ(gen->getDouble("rot.z") * (gen->getPresent("rot.z.degrees") ? (PI / 180.0) : 1.0)) *
-           MatUtil::rotationY(gen->getDouble("rot.y") * (gen->getPresent("rot.y.degrees") ? (PI / 180.0) : 1.0)) *
-           MatUtil::scale(gen->getDouble("scale.x", 1), gen->getDouble("scale.y", 1), gen->getDouble("scale.z", 1));
+    material = res->get<Material>(gen->getFirstString("material"));
+    mesh = res->get<Mesh>(gen->getFirstString("mesh"));
+    mat *= MatUtil::translation(gen->getFirstDouble("pos.x"), gen->getFirstDouble("pos.y"), gen->getFirstDouble("pos.z")) *
+           MatUtil::rotationX(gen->getFirstDouble("rot.x") * (gen->getPresent("rot.x.degrees") ? (PI / 180.0) : 1.0)) *
+           MatUtil::rotationZ(gen->getFirstDouble("rot.z") * (gen->getPresent("rot.z.degrees") ? (PI / 180.0) : 1.0)) *
+           MatUtil::rotationY(gen->getFirstDouble("rot.y") * (gen->getPresent("rot.y.degrees") ? (PI / 180.0) : 1.0)) *
+           MatUtil::scale(gen->getFirstDouble("scale.x", 1), gen->getFirstDouble("scale.y", 1), gen->getFirstDouble("scale.z", 1));
     success = true;
 }
 

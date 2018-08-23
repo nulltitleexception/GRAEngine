@@ -18,11 +18,11 @@ namespace GRAE {
 WindowProperties::WindowProperties() {}
 
 WindowProperties::WindowProperties(GRAE::Gen *gen) {
-    gen->getString("title", "GRAE Engine " + getVersionString());
-    width = gen->getInt("resolution.x", 640);
-    height = gen->getInt("resolution.y", 480);
-    vsync = gen->getInt("vsync", 1);
-    decorated = gen->getBool("decorated", true);
+    gen->getFirstString("title", "GRAE Engine " + getVersionString());
+    width = gen->getFirstInt("resolution.x", 640);
+    height = gen->getFirstInt("resolution.y", 480);
+    vsync = gen->getFirstInt("vsync", 1);
+    decorated = gen->getFirstBool("decorated", true);
 }
 
 Window::Window_Impl::Window_Impl(GLFWwindow *wind) : window(wind) {

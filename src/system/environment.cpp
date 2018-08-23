@@ -16,15 +16,15 @@ void Environment::registerListener(std::string key, std::function<void()> f){
 
 void Environment::load(Gen *gen, std::string prefix) {
     for (std::string key:gen->getKeys()) {
-        if (gen->getString(key).size()) {
+        if (gen->getFirstString(key).size()) {
             if (gen->isDouble(key)) {
-                set(prefix + key, gen->getDouble(key));
+                set(prefix + key, gen->getFirstDouble(key));
             } else if (gen->isInt(key)) {
-                set(prefix + key, gen->getInt(key));
+                set(prefix + key, gen->getFirstInt(key));
             } else if (gen->isBool(key)) {
-                set(prefix + key, gen->getBool(key));
+                set(prefix + key, gen->getFirstBool(key));
             } else {
-                set(prefix + key, gen->getString(key));
+                set(prefix + key, gen->getFirstString(key));
             }
         }
         if (gen->hasSubValues(key)) {

@@ -10,7 +10,7 @@ CellSchematic::CellSchematic(std::string s, Resources *res, bool &success, std::
     Gen *gen = res->getFromRoot<Gen>(s + ".cell");
     std::vector<std::string> keys = gen->getKeys();
     for (auto key : keys) {
-        std::string val = gen->getString(key);
+        std::string val = gen->getFirstString(key);
         if (key == "Entity") {
             ent.push_back(res->get<EntitySchematic>(val));
         } else {

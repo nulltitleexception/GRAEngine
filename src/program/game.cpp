@@ -28,6 +28,7 @@ void Game::mainloop(double dt) {
 Game::Game(GraphicsContext *gc, Window *wind, Resources *r, World *w) : shouldExit(false), graphics(gc), window(wind),
                                                                         res(r), world(w) {
     world->game = this;
+    Environment::get()->set("FPS", 0);
 }
 
 Game::~Game() {

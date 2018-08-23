@@ -51,9 +51,9 @@ Font::Font(Resources *res) {
 
 Font::Font(std::string path, Resources *res, bool &success, std::string &reason) {
     Gen gen(path + ".fnt", res, success, reason);
-    texture = res->get<Texture>(gen.getString("texture"));
-    shader = res->get<Shader>(gen.getString("shader"));
-    data = res->get<FontData>(gen.getString("data"));
+    texture = res->get<Texture>(gen.getFirstString("texture"));
+    shader = res->get<Shader>(gen.getFirstString("shader"));
+    data = res->get<FontData>(gen.getFirstString("data"));
 }
 
 Text2D *Font::getText(std::string t, int size) {

@@ -28,7 +28,8 @@ void Cell::render() {
     }
 }
 
-TerrainCell::TerrainCell(World *w) : Cell(w) {
+TerrainCell::TerrainCell(World *w) : Cell(w), width(0),height(0) {
+
 }
 
 

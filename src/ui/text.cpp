@@ -5,9 +5,9 @@
 
 namespace GRAE {
 Text::Text(Resources *res, Gen *gen) : MenuItem(res, gen) {
-    string = gen->getString("string", "");
-    size = gen->getInt("size", 12);
-    font = res->get<Font>(gen->getString("font", ""));
+    string = gen->getFirstString("string", "");
+    size = gen->getFirstInt("size", 12);
+    font = res->get<Font>(gen->getFirstString("font", ""));
     text = font->getText(string, size);
 }
 

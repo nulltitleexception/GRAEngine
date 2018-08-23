@@ -56,79 +56,98 @@ bool Gen::getPresent(std::string id) {
     }
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
-    return (values.count(key) && values.at(key).subvalues->getPresent(remainder));
+    return (values.count(key) && values.at(key).at(0).subvalues->getPresent(remainder));
 }
 
-std::string Gen::getString(std::string id, std::string fallback) {
+int Gen::getCount(std::string id) {
     std::string::size_type loc = id.find('.', 0);
     if (loc == std::string::npos) {
-        return values.count(id) ? values.at(id).value : fallback;
+        return values.count(id) > 0 ? values.at(id).size() : 0;
     }
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
-    return (values.count(key) && values.at(key).subvalues) ? values.at(key).subvalues->getString(remainder, fallback)
-                                                           : fallback;
+    return values.count(key) ? values.at(key).at(0).subvalues->getCount(remainder) : 0;
 }
 
-int Gen::getInt(std::string id, int fallback) {
+std::string Gen::getFirstString(std::string id, std::string fallback) { return getString(id, 0, fallback); }
+
+int Gen::getFirstInt(std::string id, int fallback) { return getInt(id, 0, fallback); }
+
+double Gen::getFirstDouble(std::string id, double fallback) { return getDouble(id, 0, fallback); }
+
+bool Gen::getFirstBool(std::string id, bool fallback) { return getBool(id, 0, fallback); }
+
+std::string Gen::getString(std::string id, int index, std::string fallback) {
+    std::string::size_type loc = id.find('.', 0);
+    if (loc == std::string::npos) {
+        return values.count(id) ? values.at(id).at(index).value : fallback;
+    }
+    std::string key = id.substr(0, loc);
+    std::string remainder = id.substr(loc + 1);
+    return (values.count(key) && values.at(key).at(index).subvalues) ? values.at(key).at(index).subvalues->getString(
+            remainder, 0, fallback) : fallback;
+}
+
+int Gen::getInt(std::string id, int index, int fallback) {
     std::string::size_type loc = id.find('.', 0);
     if (loc == std::string::npos) {
         try {
-            return values.count(id) ? std::stoi(values.at(id).value) : fallback;
+            return values.count(id) ? std::stoi(values.at(id).at(index).value) : fallback;
         } catch (...) {
             return fallback;
         }
     }
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
-    return (values.count(key) && values.at(key).subvalues) ? values.at(key).subvalues->getInt(remainder, fallback)
-                                                           : fallback;
+    return (values.count(key) && values.at(key).at(index).subvalues) ? values.at(key).at(index).subvalues->getInt(
+            remainder, 0, fallback) : fallback;
 }
 
-double Gen::getDouble(std::string id, double fallback) {
+double Gen::getDouble(std::string id, int index, double fallback) {
     std::string::size_type loc = id.find('.', 0);
     if (loc == std::string::npos) {
         try {
-            return values.count(id) ? std::stod(values.at(id).value) : fallback;
+            return values.count(id) ? std::stod(values.at(id).at(index).value) : fallback;
         } catch (...) {
             return fallback;
         }
+
     }
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
-    return (values.count(key) && values.at(key).subvalues) ? values.at(key).subvalues->getDouble(remainder, fallback)
-                                                           : fallback;
+    return (values.count(key) && values.at(key).at(index).subvalues) ? values.at(key).at(index).subvalues->getDouble(
+            remainder, 0, fallback) : fallback;
 }
 
-bool Gen::getBool(std::string id, bool fallback) {
+bool Gen::getBool(std::string id, int index, bool fallback) {
     std::string::size_type loc = id.find('.', 0);
     if (loc == std::string::npos) {
         bool b;
-        std::istringstream(values.at(id).value) >> std::boolalpha >> b;
+        std::istringstream(values.at(id).at(index).value) >> std::boolalpha >> b;
         return values.count(id) ? b : fallback;
     }
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
-    return (values.count(key) && values.at(key).subvalues) ? values.at(key).subvalues->getBool(remainder, fallback)
-                                                           : fallback;
+    return (values.count(key) && values.at(key).at(index).subvalues) ? values.at(key).at(index).subvalues->getBool(
+            remainder, 0, fallback) : fallback;
 }
 
-Gen *Gen::getSubValues(std::string id) {
+Gen *Gen::getSubValues(std::string id, int index) {
     std::string::size_type loc = id.find('.', 0);
     if (loc == std::string::npos) {
-        return values.count(id) ? values.at(id).subvalues.get() : nullptr;
+        return values.count(id) ? values.at(id).at(index).subvalues.get() : nullptr;
     }
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
-    return (values.count(key) && values.at(key).subvalues) ? values.at(key).subvalues->getSubValues(remainder)
-                                                           : nullptr;
+    return (values.count(key) && values.at(key).at(index).subvalues) ? values.at(key).at(index).subvalues->getSubValues(
+            remainder, 0) : nullptr;
 }
 
-bool Gen::isInt(std::string id) {
+bool Gen::isInt(std::string id, int index) {
     std::string::size_type loc = id.find('.', 0);
     if (loc == std::string::npos) {
         try {
-            int i = std::stoi(values.at(id).value);
+            int i = std::stoi(values.at(id).at(index).value);
             return true;
         } catch (...) {
             return false;
@@ -136,14 +155,15 @@ bool Gen::isInt(std::string id) {
     }
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
-    return (values.count(key) && values.at(key).subvalues != nullptr && values.at(key).subvalues->isInt(remainder));
+    return (values.count(key) && values.at(key).at(index).subvalues != nullptr &&
+            values.at(key).at(index).subvalues->isInt(remainder));
 }
 
-bool Gen::isDouble(std::string id) {
+bool Gen::isDouble(std::string id, int index) {
     std::string::size_type loc = id.find('.', 0);
     if (loc == std::string::npos) {
         try {
-            double d = std::stod(values.at(id).value);
+            double d = std::stod(values.at(id).at(index).value);
             return true;
         } catch (...) {
             return false;
@@ -151,30 +171,32 @@ bool Gen::isDouble(std::string id) {
     }
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
-    return (values.count(key) && values.at(key).subvalues != nullptr && values.at(key).subvalues->isDouble(remainder));
+    return (values.count(key) && values.at(key).at(index).subvalues != nullptr &&
+            values.at(key).at(index).subvalues->isDouble(remainder));
 }
 
-bool Gen::isBool(std::string id) {
+bool Gen::isBool(std::string id, int index) {
     std::string::size_type loc = id.find('.', 0);
     if (loc == std::string::npos) {
-        std::string val = values.at(id).value;
+        std::string val = values.at(id).at(index).value;
         std::transform(val.begin(), val.end(), val.begin(), ::tolower);
         return val == "true" || val == "false";
     }
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
-    return (values.count(key) && values.at(key).subvalues != nullptr && values.at(key).subvalues->isBool(remainder));
+    return (values.count(key) && values.at(key).at(index).subvalues != nullptr &&
+            values.at(key).at(index).subvalues->isBool(remainder));
 }
 
-bool Gen::hasSubValues(std::string id) {
+bool Gen::hasSubValues(std::string id, int index) {
     std::string::size_type loc = id.find('.', 0);
     if (loc == std::string::npos) {
-        return (values.count(id) && values.at(id).subvalues.get() != nullptr);
+        return (values.count(id) && values.at(id).at(index).subvalues.get() != nullptr);
     }
     std::string key = id.substr(0, loc);
     std::string remainder = id.substr(loc + 1);
-    return (values.count(key) && values.at(key).subvalues != nullptr &&
-            values.at(key).subvalues->hasSubValues(remainder));
+    return (values.count(key) && values.at(key).at(index).subvalues != nullptr &&
+            values.at(key).at(index).subvalues->hasSubValues(remainder));
 }
 
 int Gen::size() {
@@ -213,12 +235,12 @@ void Gen::consume(std::string &s) {
         if (i >= s.size()) {
             s = "";
             if (key.size()) {
-                values[key].value = "";
+                values[key].push_back(PRIVATE::Value());
             }
             return;
         } else if (s.at(i) == '\n') {
             if (key.size()) {
-                values[key].value = "";
+                values[key].push_back(PRIVATE::Value());
             }
         } else if (s.at(i) == ':') {
             i++;
@@ -232,11 +254,12 @@ void Gen::consume(std::string &s) {
             std::string val = s.substr(start, i - start);
             if (key.size() || val.size()) {
                 strEscape(val);
-                values[key].value = val;
+                values[key].push_back(PRIVATE::Value());
+                values[key].back().value = val;
             }
         } else {
             if (key.size()) {
-                values[key].value = "";
+                values[key].push_back(PRIVATE::Value());
             }
         }
         while (i < s.size() && (s.at(i) == ' ' || s.at(i) == '\t' || s.at(i) == '\n')) {
@@ -250,22 +273,26 @@ void Gen::consume(std::string &s) {
             return;
         } else if (s.at(i) == '{') {
             s.erase(0, i + 1);
-            values[key].subvalues = std::make_unique<Gen>();
-            values[key].subvalues->consume(s);
+            values[key].back().subvalues = std::make_unique<Gen>();
+            values[key].back().subvalues->consume(s);
         } else {
             s.erase(0, i);
         }
     }
 }
 
-std::string Gen::toString() {
+std::string Gen::toString(std::string prefix) {
     std::stringstream ret;
     for (auto const &pair : values) {
-        ret << pair.first << (pair.second.value.size() ? ":" : "") << pair.second.value;
-        if (pair.second.subvalues) {
-            ret << "{\n" << pair.second.subvalues->toString() << "}";
+        for (int i = 0; i < pair.second.size(); i++) {
+            ret << prefix << pair.first << (pair.second[i].value.size() ? ":" : "") << pair.second[i].value;
+            if (pair.second[i].subvalues) {
+                ret << "{\n" << pair.second[i].subvalues->toString(prefix + "    ") << "\n" << prefix << "}";
+            }
+            if (i < pair.second.size() - 1) {
+                ret << "\n";
+            }
         }
-        ret << "\n";
     }
     return ret.str();
 }

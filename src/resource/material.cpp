@@ -10,10 +10,10 @@ Material::Material(GRAE::Resources *res) {
 
 Material::Material(std::string s, Resources *res, bool &success, std::string &reason) {
     Gen gen(s + ".mtrl", res, success, reason);
-    tex = res->get<Texture>(gen.getString("texture"));
-    shader = res->get<Shader>(gen.getString("shader"));
-    props.shininess = gen.getDouble("shininess");
-    props.specularity = gen.getDouble("specularity");
+    tex = res->get<Texture>(gen.getFirstString("texture"));
+    shader = res->get<Shader>(gen.getFirstString("shader"));
+    props.shininess = gen.getFirstDouble("shininess");
+    props.specularity = gen.getFirstDouble("specularity");
 }
 
 void Material::bind() {

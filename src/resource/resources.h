@@ -122,11 +122,11 @@ public:
     }
 
     explicit Resources(Gen *manifest) {
-        rootDir = manifest->getString("Resources");
+        rootDir = manifest->getFirstString("Resources");
         log->info << "Initialized Resources at \"" << rootDir << "\"";
         Gen *types = manifest->getSubValues("Resources");
         for (std::string key : types->getKeys()) {
-            initResourceType(TYPES.get(key), types->getString(key));
+            initResourceType(TYPES.get(key), types->getFirstString(key));
         }
     }
 

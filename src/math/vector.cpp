@@ -8,10 +8,10 @@ Vector4D::Vector4D(double c) : x(c), y(c), z(c), w(c) {}
 Vector4D::Vector4D(double _x, double _y, double _z, double _w) : x(_x), y(_y), z(_z), w(_w) {}
 
 Vector4D::Vector4D(GRAE::Gen *gen) {
-    x = gen->getDouble("x");
-    y = gen->getDouble("y");
-    z = gen->getDouble("z");
-    w = gen->getDouble("w");
+    x = gen->getFirstDouble("x");
+    y = gen->getFirstDouble("y");
+    z = gen->getFirstDouble("z");
+    w = gen->getFirstDouble("w");
 }
 
 Vector4D Vector4D::operator+(const Vector4D v) const {

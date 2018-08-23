@@ -29,7 +29,8 @@ public:
 
 class TerrainCell : public Cell {
 private:
-    float *height;
+    std::unique_ptr<float> terrain;
+    int width, height;
 public:
     explicit TerrainCell(World *w);
 

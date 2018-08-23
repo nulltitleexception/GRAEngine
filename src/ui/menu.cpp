@@ -26,11 +26,11 @@ Menu::~Menu() {
 void Menu::init(Resources *res, Gen *gen) {
     for (std::string key : gen->getKeys()) {
         Gen *subvalues = gen->getSubValues(key);
-        if (gen->getString(key).size() && subvalues != nullptr) {
-            if (gen->getString(key) == "load") {
+        if (gen->getFirstString(key).size() && subvalues != nullptr) {
+            if (gen->getFirstString(key) == "load") {
                 addSubmenu(res->getInstance<Menu>(subvalues->getKeys()[0]));
             } else {
-                Type *type = TYPES.get(gen->getString(key));
+                Type *type = TYPES.get(gen->getFirstString(key));
                 addSubmenu(CAST.cast<MenuItem>(type->getIndex(), type->construct(res, subvalues)));
             }
         }

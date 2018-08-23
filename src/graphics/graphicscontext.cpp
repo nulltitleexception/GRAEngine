@@ -12,8 +12,8 @@ GraphicsProperties::GraphicsProperties() {
 }
 
 GraphicsProperties::GraphicsProperties(Gen *gen) {
-    GLMajor = gen->getInt("OpenGL Major");
-    GLMinor = gen->getInt("OpenGL Minor");
+    GLMajor = gen->getFirstInt("OpenGL Major");
+    GLMinor = gen->getFirstInt("OpenGL Minor");
 }
 
 GraphicsContext::GraphicsContext() : initialized(false) {

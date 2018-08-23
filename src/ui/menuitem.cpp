@@ -13,7 +13,7 @@ MenuItem::MenuItem(Resources *res, Gen *gen) : parent(nullptr), borders(nullptr)
 MenuItem::~MenuItem() { delete borders; }
 
 void MenuItem::init(Gen *gen) {
-    posX = gen->getDouble("alignment.x", 0);
+    posX = gen->getFirstDouble("alignment.x", 0);
     if (gen->getPresent("alignment.x.left")) {
         alignH = HorizontalAlignment::Left;
     } else if (gen->getPresent("alignment.x.center")) {
@@ -27,7 +27,7 @@ void MenuItem::init(Gen *gen) {
     } else {
         alignH = HorizontalAlignment::Absolute;
     }
-    posY = gen->getDouble("alignment.y", 0);
+    posY = gen->getFirstDouble("alignment.y", 0);
     if (gen->getPresent("alignment.y.top")) {
         alignV = VerticalAlignment::Top;
     } else if (gen->getPresent("alignment.y.center")) {
@@ -41,7 +41,7 @@ void MenuItem::init(Gen *gen) {
     } else {
         alignV = VerticalAlignment::Absolute;
     }
-    sizeX = gen->getDouble("size.x", 0);
+    sizeX = gen->getFirstDouble("size.x", 0);
     if (gen->getPresent("size.x.fill")) {
         sizeTypeX = SizeType::Fill;
     } else if (gen->getPresent("size.x.relative")) {
@@ -51,7 +51,7 @@ void MenuItem::init(Gen *gen) {
     } else {
         sizeTypeX = SizeType::None;
     }
-    sizeY = gen->getDouble("size.y", 0);
+    sizeY = gen->getFirstDouble("size.y", 0);
     if (gen->getPresent("size.y.fill")) {
         sizeTypeY = SizeType::Fill;
     } else if (gen->getPresent("size.y.relative")) {

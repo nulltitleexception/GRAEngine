@@ -35,6 +35,7 @@
 */
 namespace GRAE {
 class Gen;
+
 class Resources;
 namespace PRIVATE {
 class Value {
@@ -45,7 +46,7 @@ public:
 }
 class Gen {
 private:
-    std::unordered_map <std::string, PRIVATE::Value> values;
+    std::unordered_map<std::string, std::vector<PRIVATE::Value>> values;
 public:
     Gen();
 
@@ -57,27 +58,37 @@ public:
 
     Gen(std::string file, Resources *res, bool &success, std::string &reason);
 
-    std::vector <std::string> getKeys();
+    std::vector<std::string> getKeys();
 
     bool getPresent(std::string id);
 
-    std::string getString(std::string id, std::string fallback = "");
+    int getCount(std::string id);
 
-    int getInt(std::string id, int fallback = 0);
+    std::string getFirstString(std::string id, std::string fallback = "");
 
-    double getDouble(std::string id, double fallback = 0);
+    int getFirstInt(std::string id, int fallback = 0);
 
-    bool getBool(std::string id, bool fallback = false);
+    double getFirstDouble(std::string id, double fallback = 0);
 
-    Gen* getSubValues(std::string id);
+    bool getFirstBool(std::string id, bool fallback = false);
 
-    bool isInt(std::string id);
+    std::string getString(std::string id, int index = 0, std::string fallback = "");
 
-    bool isDouble(std::string id);
+    int getInt(std::string id, int index = 0, int fallback = 0);
 
-    bool isBool(std::string id);
+    double getDouble(std::string id, int index = 0, double fallback = 0);
 
-    bool hasSubValues(std::string id);
+    bool getBool(std::string id, int index = 0, bool fallback = false);
+
+    Gen *getSubValues(std::string id, int index = 0);
+
+    bool isInt(std::string id, int index = 0);
+
+    bool isDouble(std::string id, int index = 0);
+
+    bool isBool(std::string id, int index = 0);
+
+    bool hasSubValues(std::string id, int index = 0);
 
     int size();
 
@@ -87,7 +98,7 @@ public:
 
     void consume(std::string &s);
 
-    std::string toString();
+    std::string toString(std::string prefix = "");
 };
 }
 
