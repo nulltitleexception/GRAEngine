@@ -180,7 +180,7 @@ public:
                                   (((*(handlers[std::type_index(typeid(T))]))).getDir().length() > 0 ?
                                    ((*(handlers[std::type_index(typeid(T))]))).getDir() + "/" : "") + id);
         } else {
-            return getDefault<T>();
+            return getInstanceDefault<T>();
         }
     }
 

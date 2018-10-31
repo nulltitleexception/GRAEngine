@@ -2,7 +2,6 @@
 #define GRAE_ENGINE_WORLD_H
 
 #include "cell.h"
-#include "cellschematic.h"
 
 namespace GRAE {
 class Game;
@@ -10,17 +9,20 @@ class Game;
 class World {
 public:
     Game *game;
+private:
     std::vector<Cell *> cells;
 public:
-    World(Game *g = nullptr);
+    explicit World(Resources *res);
 
-    World(std::vector<Cell *> &c, Game *g);
+    World(std::string s, Resources *res, bool &success, std::string &reason);
 
     ~World();
 
     void update(double dt);
 
     void render();
+
+    void addCell(Cell* c);
 };
 }
 

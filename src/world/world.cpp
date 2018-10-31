@@ -1,11 +1,9 @@
 #include "world.h"
 
 namespace GRAE {
-World::World(Game *g) : game(g) {}
+World::World(Resources *res) : game(nullptr) {}
 
-World::World(std::vector<Cell *> &c, Game *g) : game(g) {
-    cells.insert(cells.end(), c.begin(), c.end());
-}
+World::World(std::string s, Resources *res, bool &success, std::string &reason) : game(nullptr) {}
 
 World::~World() {
     for (int i = 0; i < cells.size(); i++) {
@@ -24,4 +22,22 @@ void World::render() {
         cells[i]->render();
     }
 }
+
+void World::addCell(Cell *c) {
+    c->world = this;
+    cells.push_back(c);
+}
+}
+
+
+{
+std::unordered_map<std::type_index, int> offsets;
+void *p = new P();
+std::type_index typeOfP;
+Type *t = TypeImpl<P>;
+Base *b;
+std::type_index typeOfBase;
+b = (Base*)p;
+
+
 }

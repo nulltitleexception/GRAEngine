@@ -9,7 +9,7 @@
     OP(Mesh) \
     OP(Shader) \
     OP(Texture) \
-    OP(CellSchematic) \
+    OP(Cell) \
     OP(AI) \
     OP(SpinAI) \
     OP(Physics) \

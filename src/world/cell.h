@@ -16,9 +16,9 @@ public:
     World *world;
     std::vector<Entity *> entities;
 public:
-    explicit Cell(World *w);
+    explicit Cell(Resources *res);
 
-    Cell(CellSchematic *schematic, World *w);
+    Cell(std::string s, Resources *res, bool &success, std::string &reason);
 
     virtual ~Cell();
 
@@ -31,10 +31,11 @@ class TerrainCell : public Cell {
 private:
     std::unique_ptr<float> terrain;
     int width, height;
+    std::unique_ptr<Mesh> mesh;
 public:
-    explicit TerrainCell(World *w);
+    explicit TerrainCell(Resources *res);
 
-    TerrainCell(CellSchematic *schematic, World *w);
+    TerrainCell(std::string s, Resources *res, bool &success, std::string &reason);
 
     virtual ~TerrainCell();
 
